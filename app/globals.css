@@ -1,0 +1,210 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    background-color: #09090b !important;
+    color: #fafafa !important;
+  }
+}
+
+/* ==========================================================================
+   ELEGANT DARK STYLE OVERRIDES
+   Maps original cyberpunk cyan elements to sophisticated zinc/slate with 
+   vibrant sapphire blue highlights.
+   ========================================================================== */
+
+/* 1. Main Background Layouts (Original: dark navy #051424, #010f1f) */
+.bg-\[\#051424\] {
+  background-color: #09090b !important;
+}
+.bg-\[\#010f1f\] {
+  background-color: #09090b !important;
+}
+
+/* 2. Content & Card Backgrounds (Original: secondary navy #0d1c2d) */
+.bg-\[\#0d1c2d\] {
+  background-color: #18181b !important;
+}
+
+/* 3. Sub-panels & Inner quiz containers (Original: #122131) */
+.bg-\[\#122131\] {
+  background-color: #121215 !important;
+}
+.bg-\[\#122131\]\/20 {
+  background-color: rgba(24, 24, 27, 0.2) !important;
+}
+.bg-\[\#122131\]\/30 {
+  background-color: rgba(24, 24, 27, 0.3) !important;
+}
+.bg-\[\#122131\]\/60 {
+  background-color: rgba(24, 24, 27, 0.6) !important;
+}
+
+/* 4. Translucent/highlight focus layers */
+.bg-\[\#00363a\] {
+  background-color: #1e1b4b !important; /* Indigo-950 block background */
+}
+.bg-\[\#00363a\]\/30 {
+  background-color: rgba(30, 58, 138, 0.2) !important; /* Blue-950 with opacity */
+}
+.bg-\[\#002022\] {
+  background-color: rgba(30, 58, 138, 0.3) !important;
+}
+.bg-\[\#002022\]\/40 {
+  background-color: rgba(30, 58, 138, 0.15) !important;
+}
+.bg-\[\#002113\] {
+  background-color: rgba(6, 78, 59, 0.2) !important; /* Translucent success background */
+}
+.bg-\[\#00311f\] {
+  background-color: rgba(6, 78, 59, 0.4) !important;
+}
+.bg-\[\#3b2f00\] {
+  background-color: rgba(120, 53, 4, 0.25) !important; /* Amber-950 placeholder */
+}
+.bg-\[\#690005\] {
+  background-color: rgba(153, 27, 27, 0.25) !important; /* Red-950 placeholder */
+}
+.bg-\[\#4a0000\]\/30 {
+  background-color: rgba(153, 27, 27, 0.15) !important;
+}
+
+/* 5. Blue Accent Solid Backgrounds (Original: vibrant cyan #00f0ff) */
+.bg-\[\#00f0ff\] {
+  background-color: #3b82f6 !important; /* Vibrant brand sapphire-blue */
+}
+.bg-\[\#00f0ff\]\/80 {
+  background-color: rgba(59, 130, 246, 0.8) !important;
+}
+.hover\:bg-\[\#7df4ff\]:hover {
+  background-color: #2563eb !important; /* slate-blue hover */
+}
+.hover\:bg-\[\#122131\]:hover {
+  background-color: #1d1d22 !important;
+}
+.disabled\:bg-\[\#122131\]:disabled {
+  background-color: #1a1a20 !important;
+}
+
+/* 6. Gradients (Original: cyber cyan-green to sapphire-blue) */
+.from-\[\#00dbe9\] {
+  --tw-gradient-from: #3b82f6 !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(59, 130, 246, 0)) !important;
+}
+.to-\[\#00a572\] {
+  --tw-gradient-to: #1d4ed8 !important;
+}
+.to-\[\#00f0ff\] {
+  --tw-gradient-to: #60a5fa !important;
+}
+
+/* 7. Border Lines (Original: #1c2b3c, #273647) */
+.border-\[\#1c2b3c\] {
+  border-color: #27272a !important; /* Zinc-800 */
+}
+.border-\[\#273647\] {
+  border-color: #202024 !important;
+}
+.border-\[\#273647\]\/50 {
+  border-color: rgba(39, 39, 42, 0.5) !important;
+}
+.border-\[\#1a2c3f\] {
+  border-color: #27272a !important;
+}
+.border-\[\#00f0ff\]\/20 {
+  border-color: rgba(59, 130, 246, 0.2) !important;
+}
+.border-\[\#00f0ff\]\/30 {
+  border-color: rgba(59, 130, 246, 0.3) !important;
+}
+.border-\[\#00f0ff\]\/40 {
+  border-color: rgba(59, 130, 246, 0.4) !important;
+}
+.border-\[\#00f0ff\]\/50 {
+  border-color: rgba(59, 130, 246, 0.5) !important;
+}
+.hover\:border-\[\#00f0ff\]\/30:hover {
+  border-color: rgba(59, 130, 246, 0.35) !important;
+}
+.hover\:border-\[\#00f0ff\]\/40:hover {
+  border-color: rgba(59, 130, 246, 0.45) !important;
+}
+.hover\:border-\[\#00f0ff\]\/50:hover {
+  border-color: rgba(59, 130, 246, 0.6) !important;
+}
+.focus\:border-\[\#00f0ff\]:focus {
+  border-color: #3b82f6 !important;
+}
+.border-\[\#10b981\]\/30 {
+  border-color: rgba(16, 185, 129, 0.3) !important;
+}
+.border-\[\#10b981\]\/40 {
+  border-color: rgba(16, 185, 129, 0.4) !important;
+}
+
+/* 8. Text Accents & Description Styling (Original: #00f0ff, #849495, #b9cacb) */
+.text-\[\#00f0ff\] {
+  color: #3b82f6 !important; /* Sapphire Blue accent */
+}
+.hover\:text-\[\#00f0ff\]:hover {
+  color: #60a5fa !important;
+}
+.group-hover\:text-\[\#00f0ff\]:hover {
+  color: #3b82f6 !important;
+}
+.text-\[\#051424\] {
+  color: #ffffff !important; /* Solid light on button elements */
+}
+.text-\[\#849495\] {
+  color: #a1a1aa !important; /* Deep silver descriptions */
+}
+.text-\[\#b9cacb\] {
+  color: #d1d1d6 !important; /* Light silver texts */
+}
+.placeholder-\[\#849495\]::placeholder {
+  color: #71717a !important; /* Zinc-500 standard placeholder */
+}
+
+/* 9. Specialized Badges/Statuses (Original: #4edea3 success green, trophy warn keys) */
+.text-\[\#4edea3\] {
+  color: #10b981 !important; /* Elegant Emerald-500 */
+}
+.bg-\[\#4edea3\] {
+  background-color: #10b981 !important;
+}
+.text-\[\#fed639\] {
+  color: #fbbf24 !important; /* Golden Trophy Accent */
+}
+.bg-\[\#fed639\] {
+  background-color: #fbbf24 !important;
+}
+.text-\[\#ffb4ab\] {
+  color: #f87171 !important; /* Error Red alerts */
+}
+
+/* 10. Shadow & Glow Transformations to matching sapphire/slate blur */
+.shadow-\[0_0_15px_rgba\(0\,219\,233\,0\.3\)\] {
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.2) !important;
+}
+.shadow-\[0_0_20px_rgba\(0\,240\,255\,0\.2\)\] {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.15) !important;
+}
+.shadow-\[0_0_10px_rgba\(0\,240\,255\,0\.05\)\] {
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.05) !important;
+}
+
+/* 11. Custom Modern Premium Scrollbar for Elegant Dark */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #09090b;
+}
+::-webkit-scrollbar-thumb {
+  background: #27272a;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3f3f46;
+}

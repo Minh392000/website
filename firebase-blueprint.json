@@ -1,0 +1,84 @@
+{
+  "entities": {
+    "GlobalStats": {
+      "title": "Global Stats",
+      "description": "Thống kê tổng số học viên hoàn thành từng mô-đun trên toàn hệ thống.",
+      "type": "object",
+      "properties": {
+        "module1CompletedCount": {
+          "type": "integer",
+          "description": "Số lượng học viên hoàn thành Mô-đun 1"
+        },
+        "module2CompletedCount": {
+          "type": "integer",
+          "description": "Số lượng học viên hoàn thành Mô-đun 2"
+        },
+        "module3CompletedCount": {
+          "type": "integer",
+          "description": "Số lượng học viên hoàn thành Mô-đun 3"
+        },
+        "module4CompletedCount": {
+          "type": "integer",
+          "description": "Số lượng học viên hoàn thành Mô-đun 4"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Thời điểm cập nhật thống kê gần nhất"
+        }
+      },
+      "required": ["updatedAt"]
+    },
+    "UserProgress": {
+      "title": "User Progress",
+      "description": "Thông tin tiến trình học tập của người dùng cá nhân.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "UID duy nhất của người dùng"
+        },
+        "module1Progress": {
+          "type": "integer",
+          "description": "Phần trăm tiến độ của Mô-đun 1"
+        },
+        "module2Progress": {
+          "type": "integer",
+          "description": "Phần trăm tiến độ của Mô-đun 2"
+        },
+        "module3Progress": {
+          "type": "integer",
+          "description": "Phần trăm tiến độ của Mô-đun 3"
+        },
+        "module4Progress": {
+          "type": "integer",
+          "description": "Phần trăm tiến độ của Mô-đun 4"
+        },
+        "scores": {
+          "type": "object",
+          "description": "Điểm số các bài trắc nghiệm mô-đun"
+        },
+        "xp": {
+          "type": "integer",
+          "description": "Tổng điểm kinh nghiệm (XP) của người dùng"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Thời điểm cập nhật thông tin gần nhất"
+        }
+      },
+      "required": ["userId", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/global_stats/{statId}": {
+      "schema": "GlobalStats",
+      "description": "Lưu trữ thống kê tiến độ học tập toàn cầu trên hệ thống."
+    },
+    "/user_progress/{userId}": {
+      "schema": "UserProgress",
+      "description": "Lưu trữ hồ sơ học tập chi tiết của từng sinh viên."
+    }
+  }
+}

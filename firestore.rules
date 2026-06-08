@@ -1,0 +1,68 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Common helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // User Progress collection
+    match /user_progress/{userId} {
+      allow read: if isOwner(userId);
+      allow create, update: if isOwner(userId)
+        && isValidUserProgress(request.resource.data)
+        && (request.resource.id == userId);
+      allow delete: if false; // Progress cannot be deleted easily
+    }
+
+    // Helper validation for user progress
+    function isValidUserProgress(data) {
+      return data.userId is string 
+        && data.userId.size() <= 128
+        && data.xp is int
+        && data.xp >= 0
+        && data.module1Progress is int
+        && data.module1Progress >= 0
+        && data.module1Progress <= 100
+        && data.module2Progress is int
+        && data.module2Progress >= 0
+        && data.module2Progress <= 100
+        && data.module3Progress is int
+        && data.module3Progress >= 0
+        && data.module3Progress <= 100
+        && data.module4Progress is int
+        && data.module4Progress >= 0
+        && data.module4Progress <= 100;
+    }
+
+    // Global Stats collection
+    match /global_stats/{statId} {
+      allow read: if true; // Publicly readable to update real-time progress bars
+      allow create: if isSignedIn() && isValidGlobalStats(request.resource.data);
+      allow update: if isSignedIn() && isValidGlobalStats(request.resource.data);
+      allow delete: if false;
+    }
+
+    // Helper validation for global stats
+    function isValidGlobalStats(data) {
+      return data.module1CompletedCount is int
+        && data.module2CompletedCount is int
+        && data.module3CompletedCount is int
+        && data.module4CompletedCount is int;
+    }
+  }
+}
