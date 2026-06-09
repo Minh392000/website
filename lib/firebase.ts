@@ -32,7 +32,7 @@ try {
   // In Next.js, we can try to dynamically check or fallback safely.
   app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
   db = getFirestore(app);
-  isRealFirebase = true;
+  isRealFirebase = !firebaseConfig.apiKey.includes("FakeKey");
 } catch (error) {
   console.warn("Đang chạy ở chế độ Offline/Local do chưa cấu hình Firebase chính thức:", error);
 }
@@ -79,14 +79,18 @@ export interface GlobalStats {
   module2CompletedCount: number;
   module3CompletedCount: number;
   module4CompletedCount: number;
+  module5CompletedCount: number;
+  module6CompletedCount: number;
   updatedAt: string;
 }
 
 const DEFAULT_GLOBAL_STATS: GlobalStats = {
-  module1CompletedCount: 42,
-  module2CompletedCount: 28,
-  module3CompletedCount: 15,
-  module4CompletedCount: 8,
+  module1CompletedCount: 0,
+  module2CompletedCount: 0,
+  module3CompletedCount: 0,
+  module4CompletedCount: 0,
+  module5CompletedCount: 0,
+  module6CompletedCount: 0,
   updatedAt: new Date().toISOString()
 };
 

@@ -1,12 +1,13 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { 
   BookOpen, 
   Shield, 
   Code, 
   Brain, 
   Trophy, 
+  ChevronLeft,
   ChevronRight, 
   Terminal, 
   User, 
@@ -762,6 +763,486 @@ const MODULE_QUESTIONS: QuizQuestion[] = [
     ],
     correctAnswerIndex: 2,
     explanation: "Các CA (Certificate Authority) là những tổ chức được tin cậy toàn cầu, có trách nhiệm xác thực quyền sở hữu tên miền của cá nhân/doanh nghiệp trước khi ký số công khai phát hành chứng chỉ bảo mật số SSL/TLS giúp đảm bảo niềm tin trực tuyến."
+  },
+  {
+    id: 61,
+    questionText: "Trong kiến trúc cụm Kubernetes (K8s), thành phần lưu trữ phân tán nào giữ toàn bộ thông tin trạng thái cấu hình và dữ liệu hệ thống cần được bảo mật hàng đầu?",
+    options: [
+      "kube-apiserver",
+      "Kube-scheduler",
+      "etcd (Distributed Key-Value Store)",
+      "kubelet-agent"
+    ],
+    correctAnswerIndex: 2,
+    explanation: "etcd là cơ sở dữ liệu khóa-giá trị phân tán lưu trữ toàn bộ trạng thái cấu hình và thông tin nhạy cảm (như Secrets, mã token) của Kubernetes cluster. Việc mã hóa etcd khi lưu trữ (at rest) và phân quyền chặt chẽ thông qua RBAC là tối quan trọng."
+  },
+  {
+    id: 62,
+    questionText: "Hai nguyên tắc cốt lõi làm nền tảng cho kiến trúc bảo mật không tin cậy 'Zero Trust' là gì?",
+    options: [
+      "Tin tưởng tuyệt đối mạng nội bộ và kích hoạt hệ thống tường lửa lớp 7",
+      "Luôn luôn xác thực kiểm chứng (Never Trust, Always Verify) và Giả định nguy cơ bị xâm nhập (Assume Breach)",
+      "Chỉ sử dụng mã hóa SSH khóa đơn và giới hạn cổng IP tĩnh toàn phần",
+      "Sử dụng giao thức mã hóa luồng mật không có điểm cuối"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Bản chất của Zero Trust là không tin tưởng bất kỳ ai hay thiết bị nào (kể cả trong mạng nội bộ) mà luôn yêu cầu xác thực liên tục, áp dụng đặc quyền tối thiểu và luôn chuẩn bị tinh thần hệ thống đã hoặc đang bị thâm nhập để áp dụng phòng thủ chiều sâu."
+  },
+  {
+    id: 63,
+    questionText: "Kẻ tấn công có thể lợi dụng sơ hở nào sau đây để thực hiện tấn công giả mạo token ký số JWT (JSON Web Token) bằng cách sửa đổi header?",
+    options: [
+      "Thay đổi thuật toán ký trong header thành 'none' và loại bỏ chữ ký số ở đuôi của token cấu trúc chuẩn",
+      "Thay đổi thời gian hết hạn 'exp' thành số nguyên cực nhỏ",
+      "Mã hóa Base64URL lớp thứ hai cho phần chữ ký số",
+      "Mở rộng kích thước khối padding của thuật toán AES-CBC"
+    ],
+    correctAnswerIndex: 0,
+    explanation: "Nếu thư viện kiểm tra JWT của server cấu hình không bảo mật và chấp nhận giá trị thuật toán `'alg': 'none'` trong header của JWT nhầm mục đích debug, kẻ tấn công có thể chỉnh sửa payload thoải mái rồi bỏ chữ ký số ở cuối để bypass hoàn toàn cơ chế xác thực."
+  },
+  {
+    id: 64,
+    questionText: "Cấu hình tiêu đề CORS (Cross-Origin Resource Sharing) nào sau đây trên máy chủ web được coi là cực kỳ nguy hiểm, dễ bị khai thác rò rỉ dữ liệu nhạy cảm?",
+    options: [
+      "Access-Control-Allow-Origin: https://secure.domain.com",
+      "Access-Control-Allow-Origin: * kết hợp Access-Control-Allow-Credentials: true",
+      "Access-Control-Allow-Methods: GET, POST",
+      "Access-Control-Max-Age: 86400"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Sử dụng dấu đại diện '*' kết hợp cho phép thông tin xác thực (Credentials: true) có nghĩa là trang web độc hại bất kỳ ở origin khác có thể thực hiện gọi API đọc thông thông tin của người dùng đang đăng nhập thông qua cookie mà không bị cản lại."
+  },
+  {
+    id: 65,
+    questionText: "Thuật ngữ 'Mã hóa đồng cấu' (Homomorphic Encryption) định nghĩa tính năng mật mã học tiên tiến vượt bậc nào dưới đây?",
+    options: [
+      "Khả năng tạo ra cặp khóa công khai-bí mật chỉ bằng một số nguyên tố duy nhất",
+      "Cho phép tính toán trực tiếp trên dữ liệu đã được mã hóa để thu được bản dịch mã hóa mới tương thích với bản rõ mà không cần giải mật",
+      "Cơ chế bẻ khóa an toàn trước mọi siêu máy tính lượng tử",
+      "Sự đồng nhất tuyệt đối về tốc độ mã hóa và giải mã của AES"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Mã hóa đồng cấu cho phép xử lý, phân tích toán học trên dữ liệu đang ở dạng mã hóa mà không cần phải thực hiện giải mã trước đó. Đây là bước đột phá bảo vệ quyền riêng tư tuyệt đối cho điện toán đám mây."
+  },
+  {
+    id: 66,
+    questionText: "Nguyên lý 'Shift Left' (Dịch chuyển trái) trong quy trình bảo mật phần mềm DevSecOps nhấn mạnh điều gì?",
+    options: [
+      "Dịch chuyển cơ sở hạ tầng lưu trữ sang các máy chủ khu vực phía Tây",
+      "Đưa bảo mật vào càng sớm càng tốt, ngay từ những giai đoạn đầu tiên của thiết kế, viết code và tích hợp CI/CD",
+      "Bắt buộc kiểm tra mã nguồn tự động thủ công sau khi ứng dụng đã vận hành thực tế 1 năm",
+      "Dịch chuyển các quy trình kiểm thử từ chuyên gia sang cho người dùng cuối tự kiểm chứng"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Dịch chuyển trái nghĩa là tích hợp phân tích mã nguồn đóng tĩnh (SAST), quản lý phụ thuộc (SCA) ngay khi lập trình viên bắt đầu đẩy code lên, giúp phát hiện và vá lỗi bảo mật với chi phí rẻ hơn hàng chục lần so với khi phần mềm đã chạy production."
+  },
+  {
+    id: 67,
+    questionText: "Biện pháp phòng ngừa triệt để nhất đối với lỗi hổng SSRF (Server-Side Request Forgery) khiến máy chủ web bị lợi dụng đi quét cổng nội bộ là gì?",
+    options: [
+      "Chỉ mã hóa mật khẩu kết nối cơ sở dữ liệu bằng thuật toán SHA3-512",
+      "Triển khai danh sách trắng (Allowlist) nghiêm ngặt cho các URL/IP đầu ra và chặn truy cập từ máy chủ tới dải mạng local nội trú (như 127.0.0.1, 169.254.169.254)",
+      "Thay đổi cổng dịch vụ của website từ 443 về 8443",
+      "Chặn tất cả các lượt truy cập HTTP GET từ bên ngoài Internet gửi tới"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "SSRF xảy ra khi máy chủ nhận URL từ người dùng và truy cập nó mà không kiểm tra độ tin cậy. Phòng chống SSRF bằng cách sử dụng danh sách trắng dải IP đích an toàn và cấu hình firewall cấm máy chủ web thực hiện gọi nội bộ tới các dải IP nhạy cảm của hạ tầng đám mây."
+  },
+  {
+    id: 68,
+    questionText: "Mục đích tối ưu của cơ chế bảo mật hệ điều hành ASLR (Address Space Layout Randomization) là chống lại hành vi khai thác nào?",
+    options: [
+      "Tấn công từ chối dịch vụ phân tán làm tràn băng thông mạng",
+      "Giả mạo phản hồi DNS để dẫn dụ người dùng sang trang lừa đảo",
+      "Khai thác lỗi tràn bộ đệm (Buffer Overflow) bằng cách xáo trộn ngẫu nhiên vị trí các vùng nhớ quan trọng (Stack, Heap, Thư viện liên kết)",
+      "Giải mã khóa RSA bằng cách đếm lượng điện năng hao phí"
+    ],
+    correctAnswerIndex: 2,
+    explanation: "ASLR xáo trộn ngẫu nhiên địa chỉ nạp trong bộ nhớ của các tiến trình hệ thống, khiến kẻ tấn công không thể đoán được chính xác địa chỉ hàm đích hay địa chỉ shellcode để thực thi lệnh trái phép trong các kịch bản tràn bộ đệm."
+  },
+  {
+    id: 69,
+    questionText: "Trong giao thức truyền tin bảo mật trên web, tiêu đề HSTS (HTTP Strict Transport Security) đóng vai trò ngăn ngừa cuộc tấn công nào?",
+    options: [
+      "Tấn công vét cạn mật khẩu người dùng admin qua cổng API",
+      "Tấn công hạ cấp giao thức từ HTTPS xuống HTTP không bảo mật và chặn nghe lén gói tin truyền đi (SSL/TLS Stripping)",
+      "Thâm nhập cơ sở dữ liệu MySQL thông qua SQL Injection",
+      "Mã độc dính mã tự nhân bản trong ổ cứng mạng chia sẻ"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "HSTS là một tiêu đề phản hồi gửi từ phía máy chủ thông báo cho trình duyệt của người dùng biết rằng nó bắt buộc chỉ được kết nối qua HTTPS tương lai, ngăn ngừa hacker can thiệp hạ cấp website từ https xuống http thường."
+  },
+  {
+    id: 70,
+    questionText: "Tại sao kỹ thuật sử dụng 'Prepared Statements' (Tham số hóa truy vấn) lại ngăn ngừa được hoàn toàn lỗ hổng SQL Injection nhức nhối hiện nay?",
+    options: [
+      "Nó mã hóa toàn bộ dữ liệu lưu trữ trong cơ sở dữ liệu thành hệ nhị phân",
+      "Nó phân rã hoàn toàn câu lệnh SQL gốc và cấu trúc dữ liệu người dùng nhập thành hai phần tách biệt, khiến hệ quản trị CSDL coi input thuần là giá trị tham số chứ không bao giờ thực thi dưới dạng lệnh",
+      "Nó giúp website chạy nhanh hơn và tăng băng thông cho database",
+      "Nó tự động phát hiện và gửi thông báo cảnh báo IP của hacker lên Firebase Cloud"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Prepared Statements hoạt động bằng cách biên dịch câu lệnh mẫu SQL trước, sau đó mới lồng giá trị tham số vào. Dù kẻ tấn công có nhập các ký từ đặc biệt như `' OR '1'='1`, hệ thống cũng chỉ coi đó là một chuỗi ký tự thường để đối chiếu chứ không biên dịch thành lệnh logic."
+  },
+  {
+    id: 71,
+    questionText: "Khi triển khai xác thực OAuth 2.0 trên ứng dụng di động hoặc ứng dụng đơn trang dạng SPA, tại sao giao thức PKCE (Proof Key for Code Exchange) lại cực kỳ quan trọng?",
+    options: [
+      "Nó thay thế hoàn toàn chữ ký số của chứng chỉ máy chủ",
+      "Nó loại bỏ nhu cầu lưu trữ bí mật (client_secret) ở phía client bằng cách sử dụng mã thách thức động ngẫu nhiên ngăn chặn tấn công đánh cắp mã Authorization Code trên thiết bị",
+      "Nó tăng tốc độ tải file đa phương tiện của ứng dụng di động",
+      "Nó mã hóa lưu lượng mạng bằng giao thức WireGuard riêng"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Các ứng dụng client-side như di động hay SPA được coi là các client không bảo mật (public client) vì không thể giữ an toàn khóa bí mật client_secret. PKCE sử dụng mãverifier ngẫu nhiên sinh ra động trên mỗi lượt login để đảm bảo Authorize Code không thể bị nghe lén lợi dụng."
+  },
+  {
+    id: 72,
+    questionText: "Phương pháp tạo mô hình mối đe dọa bảo mật có tên STRIDE do Microsoft khởi xướng gồm những thành phần đại diện nào?",
+    options: [
+      "Scanning, Treason, Integrity, Division, Egress",
+      "Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege",
+      "Symmetric, Trojan, Ransomware, Intrusion, DMZ, Encryption",
+      "Service, Trust, Risk, Identity, Verification, Exploit"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "STRIDE là mô hình giúp đánh giá các nguy cơ gồm: Giả mạo danh tính (Spoofing), Sửa đổi dữ liệu (Tampering), Chối bỏ trách nhiệm (Repudiation), Rò rỉ thông tin (Information Disclosure), Từ chối dịch vụ (Denial of Service) và Thăng tiến đặc quyền trái phép (Elevation of Privilege)."
+  },
+  {
+    id: 73,
+    questionText: "Sự khác biệt cốt lõi giữa phân tích mã độc tĩnh (Static Analysis) và phân tích mã độc động (Dynamic Analysis) là gì?",
+    options: [
+      "Phân tích tĩnh yêu cầu sử dụng máy tính chạy Windows cũ, phân tích động chạy trên Linux tiên tiến",
+      "Phân tích tĩnh là kiểm tra cấu trúc mã nguồn, header của file nhị phân mà không khởi chạy; trong khi phân tích động là trực tiếp thực thi mã độc trong môi trường hộp cát cách ly an toàn (Sandbox) để theo dõi hành vi trực quan",
+      "Phân tích động chỉ quét chữ ký hash MD5 của file tải lên",
+      "Phân tích tĩnh nhanh hơn và cho biết chính xác hành vi ghi đè Registry của Ransomware khi hoạt động thực tế"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Phân tích tĩnh tập trung đọc hiểu cấu trúc file, giải mã chuỗi ký tự, đọc code Assembly. Phân tích động chạy trực tiếp file độc hại để ghi nhận các hành vi gọi mạng, can thiệp file hệ thống, chỉnh sửa khóa Registry, giúp bắt bài mã độc đa hình."
+  },
+  {
+    id: 74,
+    questionText: "Thuật toán mã hóa AES với chế độ hoạt động GCM (Galois/Counter Mode) cung cấp tính năng vượt trội nào so với chế độ CBC (Cipher Block Chaining)?",
+    options: [
+      "Nó tự động tạo khóa bí mật cho các thiết bị mà không cần phân phối",
+      "Nó là mật mã luồng bất đối xứng không dùng mô-đun toán học",
+      "Nó cung cấp cơ chế Authenticated Encryption (AEAD) - vừa mã hóa bảo mật vừa tạo mã xác thực thông điệp đi kèm ngăn chặn việc sửa đổi bản mã",
+      "Nó giới hạn số lượng byte dữ liệu mã hóa tối đa là 1 Megabyte"
+    ],
+    correctAnswerIndex: 2,
+    explanation: "AES-GCM là chế độ mã hóa xác thực tích hợp (AEAD). Ở chế độ CBC, kẻ tấn công có thể sửa đổi một phần bản mã (Bit-flipping) gây sai lệch dữ liệu khi giải mã mà server không hề hay biết. AES-GCM tạo thẻ xác thực (Auth Tag) đi kèm đảm bảo tính toàn vẹn tuyệt đối."
+  },
+  {
+    id: 75,
+    questionText: "Chính sách bảo mật CSP (Content Security Policy) cấu hình trong tiêu đề HTTP hoạt động ra sao để chặn đứng các cuộc tấn công lồng mã độc XSS?",
+    options: [
+      "Nó mã hóa dữ liệu người dùng nhập bằng cơ chế RSA",
+      "Nó cho phép máy chủ định nghĩa danh sách trắng các origin/nguồn tin cậy được phép thực thi JavaScript, cấm chạy mã inline script bừa bãi và chặn tải tài nguyên lạ ngoài luồng",
+      "Nó tự động quét sạch virus trên máy tính của người dùng truy cập",
+      "Nó chuyển hướng toàn bộ các link JavaScript độc hại sang một trang trống"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "CSP hoạt động ở phía trình duyệt người dùng. Bằng cách định cấu hình chặt chẽ chỉ cho phép chạy js từ domain hiện tại hoặc từ các máy chủ CDN tin cậy, CSP ngăn chặn hacker tiêm mã độc inline script từ bên ngoài thực thi đánh cắp token hay cookie."
+  },
+  {
+    id: 76,
+    questionText: "Khi kết nối máy chủ qua giao thức SSH, thuật toán tạo cặp khóa xác thực hiện đại Ed25519 sở hữu ưu điểm gì nổi bật so với thuật toán RSA kế thừa?",
+    options: [
+      "Ed25519 chậm hơn nhưng cho dung lượng khóa lớn hơn 1 Megabyte",
+      "Ed25519 hoạt động trên bài toán mật mã đường cong Elliptic (Curve25519), cho hiệu năng xử lý cực nhanh, kích thước khóa siêu nhỏ gọn (256-bit) nhưng tương đương sức mạnh bảo mật của khóa RSA 3072-bit trở lên",
+      "Nó không dùng khóa bí mật mà tự sinh mã qua cảm biến phần cứng",
+      "Ed25519 bắt buộc người dùng nhập mật khẩu gốc sau mỗi dải IP"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Ed25519 là tiêu chuẩn SSH hiện đại khuyên dùng, dựa trên phép tính nhóm điểm trên đường cong Elliptic Edwards, cung cấp tốc độ sinh khóa và ký số siêu tốc cùng độ dài khóa ngắn, tránh các lỗ hổng toán học tiềm tàng trong RSA cổ điển."
+  },
+  {
+    id: 77,
+    questionText: "Phương thức tấn công lừa đảo 'Spear Phishing' (Tấn công lừa đảo có mục tiêu) khác biệt thế nào với hoạt động 'Phishing' thông thường?",
+    options: [
+      "Spear Phishing chỉ quét các cổng dịch vụ HTTPS trên tường lửa",
+      "Phishing thông thường gửi email rác hàng loạt không nhắm cụ thể ai; còn Spear Phishing được đầu tư nghiên cứu kỹ lưỡng, nhắm trực diện vào một cá nhân, tổ chức cụ thể dựa trên thông tin thu thập riêng",
+      "Nó chỉ tấn công bằng tin nhắn thoại thông qua hệ thống tổng đài ảo",
+      "Spear Phishing là hình thức sử dụng mã độc tống tiền khóa file dữ liệu"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Spear Phishing mang tính chất nhắm mục tiêu cao độ (Tailored attack). Kẻ tấn công có thể nghiên cứu mạng xã hội, tên bạn bè, cấp trên của nạn nhân để viết một bức thư lừa đảo vô cùng chân thực, khiến tỷ lệ nhấp vào link mã độc cực cao."
+  },
+  {
+    id: 78,
+    questionText: "Hình thức tấn công Multi-Factor Authentication (MFA) Fatigue (hay còn gọi là MFA Spamming) hoạt động dựa trên nguyên lý lạm dụng nào?",
+    options: [
+      "Bẻ khóa thuật toán phát sinh mã OTP dạng TOTP theo thời gian thực",
+      "Spam hàng loạt yêu cầu phê duyệt đăng nhập (Push Notification) liên tục tới điện thoại của nạn nhân vào đêm muộn cho đến khi họ mất kiên nhẫn hoặc bấm nhầm nút 'Phê duyệt' (Chấp thuận) để chấm dứt sự phiền toái",
+      "Xâm nhập vật lý trực tiếp tráo SIM điện thoại di động mạng",
+      "Mạo danh tổng đài viên viễn thông phát sinh mã khôi phục"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "MFA Fatigue không tập trung vào đánh sập thuật toán, mà đánh vào yếu tố tâm lý con người. Hacker gửi hàng trăm cảnh báo xác thực liên tiếp của Microsoft Authenticator hay Okta cho đến khi nạn nhân mệt mỏi chấp nhận đại để tắt tiếng điện thoại, cho phép hacker đăng nhập."
+  },
+  {
+    id: 79,
+    questionText: "Ba nhân tố cấu thành bánh xe bảo mật thông tin tiêu chuẩn của tam giác bảo mật 'CIA Triad' bao gồm những gì?",
+    options: [
+      "Coding, Intrusion, Authentication",
+      "Confidentiality (Tính bảo mật), Integrity (Tính toàn vẹn), Availability (Tính sẵn sàng)",
+      "Cryptography, Internet, Authorization",
+      "Computer, IP, Address"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "CIA Triad đại diện cho: Bảo mật (đảm bảo thông tin chỉ người được cấp quyền mới tiếp cận), Toàn vẹn (đảm bảo dữ liệu không bị tự ý sửa đổi trái phép) và Sẵn sàng (đảm bảo hệ thống đáp ứng dịch vụ trôi chảy khi người dùng cần)."
+  },
+  {
+    id: 80,
+    questionText: "Lỗ hổng an ninh OpenSSL cực kỳ nghiêm trọng 'Heartbleed' (CVE-2014-0160) khét tiếng trước đây thuộc loại lỗi lập trình bộ nhớ cụ thể nào?",
+    options: [
+      "Tràn Stack làm hỏng cấu trúc phân phối chương trình",
+      "Lỗi tràn đọc bộ đệm (Buffer Over-read) do thiếu kiểm định độ dài chuỗi ký tự gửi lên trong gói tin rải nhịp Heartbeat, khiến server rò rỉ dung lượng RAM chứa mật khóa chính chủ",
+      "Tấn công lừa đảo chuyển tiền tự động thông qua giao thức API",
+      "Đầu độc luồng thực thi hàm ngẫu nhiên của OpenSSL"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Heartbleed do thiếu kiểm tra biên trong hàm xử lý gói tin TLS Heartbeat. Khách hàng gửi gói tin nói độ dài là 64KB nhưng data thực chỉ có 1 byte, khiến OpenSSL chép lấn vùng nhớ RAM liền kề gửi trả lại, làm rò rỉ mật khẩu, Private Key."
+  },
+  {
+    id: 81,
+    questionText: "Trong mạng nội bộ doanh nghiệp chạy Microsoft Active Directory, cuộc tấn công 'Golden Ticket' biểu thị hành vi nguy hiểm nào của tin tặc?",
+    options: [
+      "Đăng ký tên miền giả mạo khớp hoàn toàn với cấu trúc Active Directory",
+      "Giả tạo chứng chỉ Kerberos Ticket-Granting Ticket (TGT) tự cấp quyền Quản trị viên tối cao (Domain Admin) vô thời hạn bằng cách sở hữu mã khóa hash của tài khoản đặc biệt KRBTGT",
+      "Chặn băng thông kết nối từ máy client tới domain controller bằng kỹ thuật DDoS",
+      "Sử dụng công cụ rà quét cổng mạng tự động tìm cổng AD"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Khi hacker kiểm soát được Domain Controller và chiết xuất thành công mật khóa krbtgt, chúng có thể tự ký cấp mã Kerberos Ticket (Golden Ticket), cho phép chúng truy cập không giới hạn mọi tài nguyên mạng AD mà không bị hệ thống kiểm soát."
+  },
+  {
+    id: 82,
+    questionText: "Tại sao trong quy trình build Docker Image phục vụ môi trường Cloud Production, các kỹ sư bảo mật luôn khuyến cáo không được chạy ứng dụng dưới quyền 'user root'?",
+    options: [
+      "Để tiết kiệm dung lượng lưu trữ của Docker Image",
+      "Để giảm thiểu thiệt hại nếu container bị dính lỗi thoát quyền (Container Escape) - khi đó kẻ tấn công sẽ có đặc quyền root tương đương trực tiếp trên hệ điều hành vật lý chủ quản (Host)",
+      "Vì Docker không hỗ trợ quyền root trên các tiến trình dịch vụ Node.js",
+      "Do quyền root làm giảm tốc độ khởi chạy container xuống mức tối đa"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Mặc định Docker chạy tiến trình trong container bằng root. Nếu container dính lỗ hổng bảo mật và hacker thoát được container sang Host OS, quyền root này cho phép chúng kiểm soát toàn bộ server vật lý. Sử dụng USER non-root là bài toán cơ bản."
+  },
+  {
+    id: 83,
+    questionText: "Chức năng bảo vệ của đại lượng 'Stack Canary' (Phần tử chim yến Stack) trong cơ chế biên dịch phần mềm an toàn là gì?",
+    options: [
+      "Dự báo chất lượng băng thông kết nối máy chủ",
+      "Một chuỗi bit ngẫu nhiên đặt ngay trước địa chỉ trả về (Return Address) của ngăn xếp Stack, dùng để kiểm tra tính toàn vẹn tuyệt đối: nếu bị ghi đè sẽ lập tức hủy tiến trình tránh bẻ luồng thực thi lệnh nguy hiểm",
+      "Mã hóa toàn bộ các biến cục bộ cục bộ bằng thuật toán băm SHA256",
+      "Một chương trình chạy ngầm phát hiện virus trong thư mục gốc"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Canary là một cơ chế dò tìm lỗi tràn bộ đệm. Chim yến mỏ than chết báo hiệu khí độc. Khi hacker cố tình tràn biến đệm để chèn ghi đè địa chỉ trả về, chúng buộc phải ghi đè lên Canary. Thấy Canary biến đổi, hệ thống hủy luôn tiến trình."
+  },
+  {
+    id: 84,
+    questionText: "Kỹ thuật bảo mật ứng dụng di động 'SSL/TLS Certificate Pinning' có mục tiêu cụ thể là ngăn chặn nguy cơ nào?",
+    options: [
+      "Nạn crack game, sửa đổi file dữ liệu offline trên bộ nhớ máy di động",
+      "Mọi cuộc tấn công chặn bắt giải mã lưu lượng mạng (Man-in-the-Middle) - nó cấu hình app chỉ chấp nhận một chữ ký số hoặc khóa công khai của đúng máy chủ chỉ định chứ không tin tưởng mù quáng vào CA của hệ điều hành di động",
+      "Khai thác lỗi SQL Injection trong hệ điều hành Android SQLite",
+      "Chống lại kỹ thuật đầu độc dữ liệu thuật toán học máy AI"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Khi người dùng di động cài đặt các công cụ chặn bắt hay CA giả (như Charles Proxy, Fiddler), thiết bị có thể bị chặn và giải mã HTTPS. App dùng Cert Pinning kiểm tra cứng vân tay của cert thực, từ chối kết nối nếu phát hiện cert mạo."
+  },
+  {
+    id: 85,
+    questionText: "Thuật ngữ 'Honeypot' (Hũ mật bảo mật) chỉ loại hệ thống giám sát an ninh mạng đặc biệt nào dưới đây?",
+    options: [
+      "Hệ thống lưu trữ mật khẩu người dùng toàn hệ thống có độ dài tối đa",
+      "Hệ thống mồi nhử giả lập rò rỉ dịch vụ, lỗ hổng giả tạo, dùng để dụ hacker thâm nhập, từ đó thu thập thông tin về kỹ thuật, mục tiêu và cảnh báo sớm về cuộc tấn công",
+      "Hệ thống máy chủ lưu trữ bản sao lưu dữ liệu tuyệt mật phòng chống Ransomware",
+      "Mô hình tường lửa doanh nghiệp ngăn cấm tải file .exe từ trình duyệt"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Honeypot giống hũ mật dụ kiến. Website giả, dường như có lỗ hổng dễ hack nhưng thực chất tất cả tương tác đều bị ghi lại 100% để phân tích hành vi hacker. Giúp doanh nghiệp lường trước các vụ tấn công thông minh."
+  },
+  {
+    id: 86,
+    questionText: "Trong dải các lớp bảo mật, một hệ thống tường lửa WAF (Web Application Firewall) không có chức năng nào sau đây?",
+    options: [
+      "Phân tích ngăn chặn các cú pháp tấn công SQL Injection và Cross-Site Scripting gửi lên web",
+      "Quét sâu và tiêu diệt hoàn toàn virus, mã độc Ransomware dính trên ổ đĩa vật lý của máy chủ web",
+      "Giới hạn tần suất gọi API (Rate limiting) ngăn chặn tấn công vét cạn",
+      "Nhận diện bot tự động cào quét thông tin tự diễn dịch"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "WAF hoạt động ở lớp ứng dụng (layer 7), kiểm duyệt lưu lượng HTTP/HTTPS đi vào web để cản lọc payload độc hại. WAF hoàn toàn không phải phần mềm diệt virus máy chủ hoạt động cục bộ trên hệ thống lưu trữ đĩa cứng."
+  },
+  {
+    id: 87,
+    questionText: "Mô hình bảo mật đám mây 'Shared Responsibility Model' (Trách nhiệm chung giữa nhà cung cấp dịch vụ AWS/GCP và Khách hàng) phân định điều gì?",
+    options: [
+      "Khách hàng phải trả toàn bộ chi phí sửa lỗi hạ tầng phần cứng đám mây",
+      "Nhà cung cấp đám mây chịu trách nhiệm bảo mật cho chính cơ sở hạ tầng nền tảng (Bảo mật của mây); còn Khách hàng chịu trách nhiệm bảo mật cho những gì họ đặt trong mây như cấu hình, mã nguồn, dữ liệu, hệ điều hành VM (Bảo mật trong mây)",
+      "Mọi vấn đề về mã lỗi ứng dụng web sẽ do Google chịu trách nhiệm đền bù",
+      "Khách hàng chịu trách nhiệm về vật lý phòng máy chủ đặt tại datacenter"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Đây là nguyên tác vàng của Cloud Security. Nhà cung cấp lo điện, điều hòa, ảo hóa, bảo vệ máy chủ vật lý. Khách hàng lo phần quyền IAM, bảo mật database, chống SQL Injection trong code của họ."
+  },
+  {
+    id: 88,
+    questionText: "Hệ thống SIEM (Security Information and Event Management) trong các trung tâm giám sát an ninh SOC đóng vai trò chủ chốt là gì?",
+    options: [
+      "Tự động biên dịch mã nguồn của website sang định dạng nhị phân đối xứng",
+      "Thu thập logs tập trung từ toàn mạng, máy chủ ảo, chuẩn hóa dữ liệu, tương quan các sự kiện an ninh theo thời gian thực để đưa ra cảnh báo về mối đe dọa đang diễn ra",
+      "Quét bẻ khóa mật mã RSA 2048-bit bằng phương pháp song song",
+      "Sao lưu định kỳ dự án lập trình lên nền tảng đám mây an toàn"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "SIEM là bộ não thu nhập log khổng lồ của SOC. Nó liên kết sự kiện: nhận thấy IP lạ quét port máy chủ A, và 5 phút sau IP đó đăng nhập thành công vào cơ sở dữ liệu trên máy chủ B, để phân tích đây là vụ thâm nhập tinh vi."
+  },
+  {
+    id: 89,
+    questionText: "Cuộc tấn công 'Adversarial Machine Learning' dưới dạng 'Data Poisoning' (Đầu độc dữ liệu) nhắm vào trí tuệ nhân tạo hoạt động thế nào?",
+    options: [
+      "Hack trực tiếp cơ sở dữ liệu lưu trữ để xóa sạch các bảng định dạng logs",
+      "Cố tình tiêm các mẫu dữ liệu huấn luyện độc hại, sai lệch vào tập dataset của mô hình AI, khiến AI dự báo sai lệch hoàn toàn hoặc chứa lỗ hổng bẫy cửa sau (backdoor) khi suy luận thực tế",
+      "Làm hỏng bộ xử lý đồ họa GPU của máy chủ AI bằng ddos phần mềm",
+      "Dùng AI tự sinh mã tự động đi bẻ khóa MD5"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Đầu độc dữ liệu huấn luyện khiến mô hình AI nhận diện nhầm. Ví dụ, hacker tiêm các hình ảnh biển báo giao thông có nhãn sai lệch vào tập dữ liệu học của xe tự lái, khiến xe nhận lầm biển báo DỪNG thành biển báo ĐI TIẾP."
+  },
+  {
+    id: 90,
+    questionText: "Giao thức wifi hiện đại WPA3 mang lại cải tiến bảo mật đáng giá nào so với WPA2 trước những kẻ bẻ khóa mật khẩu?",
+    options: [
+      "Yêu cầu tất cả điện thoại di động phải kết nối thông qua dây mạng LAN ảo",
+      "Sử dụng giao thức bắt tay SAE (Simultaneous Authentication of Equals) chống các cuộc tấn công vét cạn mật khẩu ngoại tuyến (Offline dictionary attack) phổ biến trên WPA2",
+      "Hạn chế số lượng thiết bị truy cập wifi tối đa là 5 máy chủ cùng lúc",
+      "Mã hóa toàn bộ sóng wifi thành dải tia hồng ngoại siêu bảo mật"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "WPA2 sử dụng bắt tay 4 bước chứa điểm yếu dễ bị bắt gói tin chứa handshake đem về bẻ khóa bằng GPU (WPA2 Handshake audit). Giao thức bắt tay SAE của WPA3 chống bẻ khóa ngoại tuyến dù người dùng đặt mật khẩu dễ đoán mức trung bình."
+  },
+  {
+    id: 91,
+    questionText: "Thuật từ 'Shodan' nổi tiếng trong ngành an ninh thông tin biểu thị cho công cụ hay hệ thống cụ thể nào?",
+    options: [
+      "Phần mềm mã nguồn mở để triển khai chữ ký mù mã hóa",
+      "Một công cụ quét tìm kiếm trực tuyến thu thập dữ liệu về các thiết bị kết nối Internet (IoT, Router, Webcams, ICS/SCADA) công khai, phát hiện sơ hở rò rỉ cổng mở",
+      "Ngôn ngữ lập trình chuyên biệt để xây dựng hệ thống tường lửa doanh nghiệp",
+      "Hệ quản trị cơ sở dữ liệu phân tán không SQL"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Shodan là công cụ tìm kiếm các thiết bị kết nối mạng IoT trên thế giới. Nó rà quét các dải IP liên tục, thu giữ thông tin banner cổng dịch vụ, giúp chuyên gia (hoặc hacker) định vị những plc, router để mật khẩu mặc định rò rỉ công khai."
+  },
+  {
+    id: 92,
+    questionText: "Trong lỗi hổng OWASP Top 10, sai sót 'Broken Access Control' (Lỗi phân quyền bị hỏng) xảy ra khi nào?",
+    options: [
+      "Hệ thống tường lửa từ chối mọi lưu lượng mạng đi vào website",
+      "Người dùng bình thường có thể truy cập, sửa đổi, xóa các tài nguyên nhạy cảm của người dùng khác hoặc sử dụng chức năng quản trị đặc quyền dành riêng cho admin do thiếu đối chiếu xác minh quyền",
+      "Mã khóa bí mật của cặp khóa RSA bị hao mòn dung lượng",
+      "Mật khẩu học viên không được bảo mật bằng phương pháp băm"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Đây là lỗi đứng đầu OWASP. Lập trình viên chỉ kiểm tra người dùng đã đăng nhập chưa, nhưng quên so khớp xem người dùng A có được phép xem hóa đơn của người dùng B hay không (lỗi IDOR), cho phép truy cập trái phép dữ liệu ngoài quyền."
+  },
+  {
+    id: 93,
+    questionText: "Tại sao lý thuyết an toàn thông tin bắt buộc phải trộn thêm 'Salt' (Muối) ngẫu nhiên vào mật khẩu trước khi băm mật khẩu để lưu trữ?",
+    options: [
+      "Để tăng dung lượng file cơ sở dữ liệu lên gấp đôi",
+      "Nhằm vô hiệu hóa hoàn toàn các bảng băm tính trước bảng cầu vồng (Rainbow Tables) - đảm bảo cùng một mật khẩu giống nhau của các người học khác nhau cũng cho ra chuỗi hash hoàn toàn khác biệt nhau khi lưu",
+      "Salt giúp giải mã mật khẩu nhanh hơn khi người dùng quên tài khoản",
+      "Để nén mật khẩu về độ lớn cố định là 8 byte mật mã"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Nếu không dùng Salt, hai người dùng cùng đặt mật khẩu là `123456` sẽ có cùng kết quả băm MD5 hay SHA256 trong database. Việc thêm Salt ngẫu nhiên riêng cho từng tài khoản buộc kẻ trộm phải vét cạn riêng biệt từng chuỗi mật khẩu, phá vỡ hiệu năng Rainbow Tables."
+  },
+  {
+    id: 94,
+    questionText: "Sự khác biệt cốt lõi giữa kỹ thuật kiểm thử bảo mật kiểm mã nguồn tĩnh (SAST) và hộp đen động (DAST) là gì?",
+    options: [
+      "SAST chỉ chạy được trên Window, DAST chạy được trên MacOS di động",
+      "SAST phân tích, kiểm duyệt cấu trúc mã nguồn thô từ bên trong mà không cần chạy ứng dụng; còn DAST thực hiện giả lập tấn công bên ngoài vào ứng dụng đang khởi chạy thực tế để phát hiện runtime vulnerability",
+      "DAST quét nhanh hơn SAST vì không cần rà soát thư mục code thô",
+      "SAST phát hiện được lỗi cấu hình tường lửa lớp 7 thực tế tốt hơn DAST"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "SAST (Static Application Security Testing) đọc hiểu từng dòng code để bắt lỗi logic sớm. DAST (Dynamic Application Security Testing) gửi payload thực vào web đang chạy để xem web phản ứng ra sao. Kết hợp hai công cụ là quy trình chuẩn hóa của DevSecOps."
+  },
+  {
+    id: 95,
+    questionText: "Khái niệm 'Zero-Day Vulnerability' (Lỗ hổng ngày Không / Zero-Day) biểu thị loại lỗ hổng phần mềm bảo mật ra sao?",
+    options: [
+      "Lỗ hổng phần mềm được nhà sản xuất vá xong trong vòng chưa đầy 1 ngày",
+      "Một lỗ hổng bảo mật chưa từng được công bố công khai, hiện tại chưa được vá bởi nhà sản xuất phần mềm, khiến mọi cơ chế phòng vệ dựa trên chữ ký số cổ điển bất lực",
+      "Lỗi hệ thống lập trình khiến website bị quay vòng ngày mốc lịch",
+      "Lỗ hổng chỉ xuất hiện vào những ngày đầu tiên của năm lịch"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Zero-Day biểu đạt rằng nhà phát triển có '0 ngày' để chuẩn bị hay phát hành bản vá chống lại nó trước khi hacker bắt đầu khai thác. Đây là loại lỗi đắt giá nhất thị trường chợ đen vì khả năng xâm nhập thành công gần như hoàn hảo."
+  },
+  {
+    id: 96,
+    questionText: "Trong mạng truyền thông bảo mật ảo, gói giao thức VPN IPsec sở hữu thành phần ESP (Encapsulating Security Payload) đảm nhiệm chức năng bảo vệ cốt lõi nào?",
+    options: [
+      "Ngăn chặn hoàn toàn hiện tượng nghẽn mạng do ddos lưu lượng truy cập",
+      "Cung cấp tính năng bảo mật bảo mật (Mã hóa gói tin dữ liệu) lẫn tính năng toàn vẹn và xác thực nguồn gốc nguồn tin",
+      "Tự động đặt lại địa chỉ IP máy của người học sau mỗi 10 giây",
+      "Thực hiện quét virus trực tiếp bộ nhớ đệm RAM của card mạng"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "IPsec có 2 thành phần chính: AH (Authentication Header) chỉ xác thực toàn vẹn không mã hóa. Còn ESP cung cấp cả mã hóa bảo mật toàn bộ dữ liệu gói tin IP, đảm bảo dữ liệu truyền an toàn và không bị nghe lén trên đường truyền mạng."
+  },
+  {
+    id: 97,
+    questionText: "Hành vi kỹ thuật nào sau đây mô tả rõ nét nhất thuật ngữ 'Privilege Escalation' (Thăng tiến đặc quyền / Leo thang đặc quyền)?",
+    options: [
+      "Mua thêm tài nguyên dung lượng băng thông mạng của nhà cung cấp dịch vụ",
+      "Tận dụng lỗ hổng bảo mật hoặc lỗi cấu hình hệ thống để mở rộng quyền hạn truy cập của tài khoản hiện tại từ mức người dùng phổ thông lên dải đặc quyền quản trị gốc (root/system)",
+      "Đổi tên tài khoản đăng nhập từ thường sang chữ viết hoa đặc biệt",
+      "Hệ thống tự động tăng cấp độ XP cho người dùng khi hoàn thành bài thi"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "Leo thang đặc quyền chia làm bảo mật dọc (gã dùng thường biến thành admin hệ thống) và bảo mật ngang (gã dùng A truy cập dữ liệu cá nhân của gã dùng B có cùng vai vế). Đây là mục tiêu quan trọng hàng đầu của hacker trong mạng nội bộ."
+  },
+  {
+    id: 98,
+    questionText: "Vụ tấn công 'BGP Hijacking' (Bẻ hướng định tuyến cổng biên) gây hậu quả an ninh quy mô lớn nào đối với luồng lưu lượng mạng Internet toàn cầu?",
+    options: [
+      "Hệ thống tự động phá hủy toàn bộ card mạng của máy chủ dịch vụ",
+      "Tuyên truyền bảng định tuyến giả mạo từ router biên khiến lưu lượng dữ liệu khổng lồ hướng về IP chỉ định bị định hướng sai đường dẫn, bị gián đoạn hoàn toàn hoặc đi vòng qua hạ tầng hacker nghe lén",
+      "Xóa sạch toàn bộ bản ghi chứng chỉ số SSL của các Certificate Authority",
+      "Làm giảm điện năng vận hành của cáp quang biển viễn thông kỹ thuật"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "BGP (Border Gateway Protocol) là giao thức định tuyến liên mạng cốt lõi của Internet toàn cầu. Nếu Router đăng thông tin định tuyến sai, dữ liệu thiết bị gửi đáng ra tới Google lại đi lệch sang một nhà mạng bên nước khác do hacker tráo bảng định tuyến biên."
+  },
+  {
+    id: 99,
+    questionText: "Thế nào là cuộc tấn công ném bẫy thông tin 'SSTI' (Server-Side Template Injection) nhắm tới ứng dụng xử lý khuôn mẫu phía máy chủ?",
+    options: [
+      "Hacker lấy trộm các file thiết kế định dạng .psd từ hosting của web",
+      "Kẻ tấn công tiêm mã lệnh lập trình vào bên trong bộ biên dịch giao diện (như Jinja2, Twig) trên máy chủ, dẫn tới việc hệ thống thực thi trực tiếp mã lệnh hệ thống trái phép (RCE) vô cùng nghiêm hại",
+      "Giả mạo phản hồi của các máy chủ proxy ngược nginx",
+      "Xóa nhầm các tệp tin lưu trữ cơ sở dữ liệu cục bộ trong ổ cứng"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "SSTI xảy ra khi input người dùng được trực tiếp nối ghép vào chuỗi cấu hình template thay vì truyền dưới dạng biến đối chiếu. Hệ cơ chế template như Jinja hay Twig biên dịch chuỗi này và vô tình thực hiện luôn lệnh máy chủ thâm nhập sâu."
+  },
+  {
+    id: 100,
+    questionText: "Mục đích chính của kỹ thuật rà quét 'DNS Tunneling' mà các nhóm hacker APT sử dụng là gì?",
+    options: [
+      "Làm tắc nghẽn hoàn toàn máy chủ DNS của nhà cung cấp dịch vụ",
+      "Sử dụng giao thức DNS (cổng 53 vốn mở thoáng trên firewall) để đóng gói dữ liệu đánh cắp, hoặc truyền lệnh điều khiển (C2) đi vòng qua hệ thống giám sát an ninh mạng một cách âm thầm",
+      "Mã hóa toàn bộ các bản ghi loại A thành bản ghi MX lật ngược",
+      "Đăng ký hàng loạt tên miền lừa đảo để quảng cáo mạng"
+    ],
+    correctAnswerIndex: 1,
+    explanation: "DNS Tunneling lạm dụng đặc tính của DNS: hầu hết các firewall trong doanh nghiệp luôn mở thông suốt cổng 53 DNS để kiểm tra phân giải tên miền. Hacker đóng gói lệnh, dữ liệu lấy trộm vào các truy vấn DNS gửi ra ngoài, qua mắt IPS/Firewall truyền thống."
   }
 ];
 
@@ -785,7 +1266,7 @@ const generateAIBotResponse = (userInput: string): string => {
     return "Tại Học viện An toàn VWA, bạn sẽ nhận được Chứng chỉ Số Tương Thích (Verified Digital Badges) cho mỗi mô-đun vượt qua bài kiểm tra lý thuyết (đạt từ 48/60 câu hỏi đúng). Dấu mốc ấn tượng này sẽ ghi nhận chuỗi thành tựu vàng của bạn để nộp hồ sơ xin việc hoặc nâng cao lộ trình nghề nghiệp!";
   }
   if (norm.includes("tai sao") || norm.includes("tai sao can")) {
-    return "RSA cần số nguyên tố siêu lớn vì nếu dùng số nhỏ, các phần mềm bẻ khóa đơn giản trên máy tính cá nhân chỉ mất vài giây để tìm ra phần tử bí mật d. Khi p và q là các số 1024 bit, số n thu được có chiều dài 2048 bit. Kể cả siêu máy tính nhanh nhất thế giới ghép lại cũng tốn hàng tỷ năm mới phân tích nổi!";
+    return "RSA cần số nguyên tố siêu lớn vì nếu dùng số nhỏ, các phần mềm bẻ khóa đơn giản trên máy tính cá nhân chỉ mất vài giây để tìm ra phần tử bí mật d. Khi p và q là các số 1024 bít, số n thu được có chiều dài 2048 bít. Kể cả siêu máy tính nhanh nhất thế giới ghép lại cũng tốn hàng tỷ năm mới phân tích nổi!";
   }
   if (norm.includes("lap trinh") || norm.includes("python") || norm.includes("code")) {
     return "Để triển khai RSA trong lập trình thực tế, các lập trình viên tránh tự code phần toán học vì dễ dính lỗ hổng bảo mật. Thay vào đó, chúng ta hay dùng thư viện chuẩn đã được kiểm chứng như PyCryptodome (Python), OpenSSL (C/C++), hoặc Web Crypto API (JavaScript). Bạn có thể xem mã nguồn minh họa Python ở bên trái của bài học!";
@@ -794,157 +1275,334 @@ const generateAIBotResponse = (userInput: string): string => {
   return "Chào bạn! Tôi là Thầy giáo Trợ lý học tập InfoSec hỗ trợ 24/7. Tôi có thể giải thích chi tiết về thuật toán mã hóa RSA, cách sinh số nguyên tố, tính phi Euler hoặc giải đáp thắc mắc liên quan tới bài trắc nghiệm của bạn. Hãy đưa ra câu hỏi hoặc sử dụng các phím học tập nhanh nhé!";
 };
 
-const formatNumber = (num: number): string => {
-  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+const renderFormattedMessage = (text: string) => {
+  if (!text) return null;
+  const lines = text.split('\n');
+  let inCodeBlock = false;
+  let codeLines: string[] = [];
+  const renderedElements: React.ReactNode[] = [];
+
+  lines.forEach((line, lineIdx) => {
+    // Code block toggle
+    if (line.trim().startsWith('```')) {
+      if (inCodeBlock) {
+        inCodeBlock = false;
+        const codeText = codeLines.join('\n');
+        codeLines = [];
+        renderedElements.push(
+          <pre key={`code-${lineIdx}`} className="bg-[#051424] text-[#4edea3] font-mono text-xs p-3 rounded border border-[#273647] overflow-x-auto my-2 select-text whitespace-pre-wrap">
+            <code>{codeText}</code>
+          </pre>
+        );
+      } else {
+        inCodeBlock = true;
+      }
+      return;
+    }
+    
+    if (inCodeBlock) {
+      codeLines.push(line);
+      return;
+    }
+
+    // Check for bullet list item
+    const isBullet = line.trim().startsWith('- ') || line.trim().startsWith('* ') || line.trim().startsWith('• ');
+    let content = line;
+    if (isBullet) {
+      content = line.trim().replace(/^[-*•]\s+/, '');
+    }
+
+    // Parse inline coding like `code` and bolding **bold**
+    const parts: React.ReactNode[] = [];
+    let currentText = content;
+    let keyIdx = 0;
+
+    // Simple regex parser for **text** and `code`
+    const regex = /(\*\*.*?\*\*|`.*?`)/g;
+    const splitParts = currentText.split(regex);
+
+    splitParts.forEach((part) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        parts.push(
+          <strong key={keyIdx++} className="font-extrabold text-[#00f0ff]">
+            {part.slice(2, -2)}
+          </strong>
+        );
+      } else if (part.startsWith('`') && part.endsWith('`')) {
+        parts.push(
+          <code key={keyIdx++} className="bg-[#051424]/80 text-[#ffb4ab] border border-[#ffb4ab]/20 px-1 py-0.5 rounded font-mono text-[11px]">
+            {part.slice(1, -1)}
+          </code>
+        );
+      } else {
+        parts.push(part);
+      }
+    });
+
+    if (isBullet) {
+      renderedElements.push(
+        <li key={lineIdx} className="list-none flex items-start gap-2 text-left pl-1 my-1.5 text-xs text-[#b9cacb]">
+          <span className="text-[#00f0ff] mt-1 shrink-0">•</span>
+          <span className="leading-relaxed">{parts}</span>
+        </li>
+      );
+    } else {
+      renderedElements.push(
+        <p key={lineIdx} className="leading-relaxed min-h-[1.2em] my-1 text-xs text-white selection:bg-[#00f0ff]/20">
+          {parts}
+        </p>
+      );
+    }
+  });
+
+  return renderedElements;
 };
 
 export default function SecurityLearningPlatform() {
-  // Navigation tabs state
   const [activeTab, setActiveTab] = useState<'dashboard' | 'modules' | 'chat'>('dashboard');
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [copiedCode, setCopiedCode] = useState(false);
-  const [logoError, setLogoError] = useState(false);
-
-  // Dynamic user personal stats stored in state and persisted in localStorage
-  const [userXP, setUserXP] = useState(8450);
-  const [userLevel, setUserLevel] = useState(14);
-  const [module4Progress, setModule4Progress] = useState(0); // dynamic progress for RSA module (0 to 100%)
-  const [completedQuizzes, setCompletedQuizzes] = useState<{ [key: number]: boolean }>({});
-
-  // Dynamic overall personal progress based on live user stats
-  const overallProgress = Math.round((75 + 30 + 12 + module4Progress) / 4);
-
-  // Dynamic global statistics loaded and updated in real-time from Firebase
-  const [globalStats, setGlobalStats] = useState<GlobalStats>({
-    module1CompletedCount: 42,
-    module2CompletedCount: 28,
-    module3CompletedCount: 15,
-    module4CompletedCount: 8,
-    updatedAt: new Date().toISOString()
-  });
-
-  // Active module reading state (to view the RSA detailed content)
   const [readingModuleId, setReadingModuleId] = useState<number | null>(null);
-
-  // Detailed quiz attempt history structures
-  interface QuizAttempt {
-    timestamp: string;
-    score: number;
-    totalQuestions: number;
-    incorrectQuestions: Array<{
-      id: number;
-      questionText: string;
-      selectedAnswerText: string;
-      correctAnswerText: string;
-      explanation: string;
-    }>;
-  }
-
-  const [quizHistory, setQuizHistory] = useState<QuizAttempt[]>([]);
-  const [quizAttemptsCount, setQuizAttemptsCount] = useState<number>(0);
-
-  // Quiz engine logic state
-  const [quizState, setQuizState] = useState<'splash' | 'playing' | 'result' | 'review'>('splash');
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [selectedAnswers, setSelectedAnswers] = useState<number[]>([]);
-  const [quizScore, setQuizScore] = useState(0);
-  const [showExplanation, setShowExplanation] = useState(false);
-  const [reviewIndex, setReviewIndex] = useState(0);
-
-  // Compute indices of incorrectly answered questions
-  const incorrectQuestionIndices = MODULE_QUESTIONS.map((q, idx) => {
-    const isIncorrect = selectedAnswers[idx] !== undefined && selectedAnswers[idx] !== q.correctAnswerIndex;
-    return isIncorrect ? idx : -1;
-  }).filter(idx => idx !== -1);
-
-  // Home search bar AI prompt state
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchPrompt, setSearchPrompt] = useState('');
-
-  // Toast state for graduation/quiz completion notification
-  const [toast, setToast] = useState<{ show: boolean; message: string; type: 'success' | 'info'; title?: string }>({
-    show: false,
-    message: '',
-    type: 'success',
-    title: ''
+  const [copiedCode, setCopiedCode] = useState(false);
+  
+  // Real-time synchronization state via Firebase/Local Fallback
+  const [globalStats, setGlobalStats] = useState<GlobalStats>({
+    module1CompletedCount: 0,
+    module2CompletedCount: 0,
+    module3CompletedCount: 0,
+    module4CompletedCount: 0,
+    module5CompletedCount: 0,
+    module6CompletedCount: 0,
+    updatedAt: ''
   });
 
-  // AI Chat Workspace states
-  const [chatMessages, setChatMessages] = useState<Array<{ sender: 'user' | 'bot'; text: string; time: string }>>([
-    { 
-      sender: 'bot', 
-      text: "Chào bạn học viên! Tôi là Trợ lý Học viện An toàn VWA. Tôi đã sẵn sàng giúp bạn tìm hiểu chi tiết về thuật toán Mã hóa RSA bảo mật bất đối xứng cùng với 60 câu hỏi ôn luyện lý thuyết nâng cao. Hãy để lại bất kỳ thắc mắc nào ở đây nhé!", 
-      time: "08:27" 
-    }
-  ]);
-  const [chatInput, setChatInput] = useState('');
-  const [aiTyping, setAiTyping] = useState(false);
-  const chatBottomRef = useRef<HTMLDivElement>(null);
-
-  // Load local user progress and subscribe to real-time Firebase Global Stats
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const savedXP = localStorage.getItem('infosec_xp');
-      const savedLevel = localStorage.getItem('infosec_level');
-      const savedProg = localStorage.getItem('infosec_module4_progress');
-      const savedQuizzes = localStorage.getItem('infosec_completed_quizzes');
-      const savedQuizHistory = localStorage.getItem('infosec_quiz_history');
-      const savedQuizAttemptsCount = localStorage.getItem('infosec_quiz_attempts_count');
-
-      setTimeout(() => {
-        if (savedXP) setUserXP(parseInt(savedXP, 10));
-        if (savedLevel) setUserLevel(parseInt(savedLevel, 10));
-        if (savedProg) setModule4Progress(parseInt(savedProg, 10));
-        if (savedQuizzes) {
-          try {
-            setCompletedQuizzes(JSON.parse(savedQuizzes));
-          } catch (e) {
-            console.error(e);
-          }
-        }
-        if (savedQuizHistory) {
-          try {
-            setQuizHistory(JSON.parse(savedQuizHistory));
-          } catch (e) {
-            console.error("Failed to load saved quiz history", e);
-          }
-        }
-        if (savedQuizAttemptsCount) {
-          setQuizAttemptsCount(parseInt(savedQuizAttemptsCount, 10));
-        }
-      }, 0);
-    }
-
-    // Subscribe to Firebase Live stats
     const unsubscribe = subscribeToGlobalStats((stats) => {
       setGlobalStats(stats);
     });
-
-    return () => {
-      unsubscribe();
-    };
+    return () => unsubscribe();
   }, []);
 
-  // Set chat viewport automatic scrolling to bottom when new messages arrive
-  useEffect(() => {
-    if (chatBottomRef.current) {
-      chatBottomRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [chatMessages, aiTyping]);
+  // Gamification tracking states inside localStorage
+  const [userXP, setUserXP] = useState(0);
+  const [userLevel, setUserLevel] = useState(1);
+  const [module1Progress, setModule1Progress] = useState(0);
+  const [module2Progress, setModule2Progress] = useState(0);
+  const [module3Progress, setModule3Progress] = useState(0);
+  const [module4Progress, setModule4Progress] = useState(0);
+  const [module5Progress, setModule5Progress] = useState(0);
+  const [module6Progress, setModule6Progress] = useState(0);
+  const [completedQuizzes, setCompletedQuizzes] = useState<{ [key: number]: boolean }>({});
+  const [quizHistory, setQuizHistory] = useState<any[]>([]);
 
-  // Auto-dismiss toast notification after 6 seconds
-  useEffect(() => {
-    if (toast.show) {
-      const timer = setTimeout(() => {
-        setToast(prev => ({ ...prev, show: false }));
-      }, 6000);
-      return () => clearTimeout(timer);
+  const modulesConfig = useMemo(() => [
+    {
+      id: 1,
+      title: "Mô-đun 1: Nhập môn Mã hóa & Mật mã đối xứng",
+      desc: "Học phần cơ bản về mật mã đối xứng, mã dòng và mã giải bằng thuật toán AES VWA standard.",
+      difficulty: "Dễ",
+      difficultyClass: "text-[#4edea3] bg-[#003824]",
+      timing: "10 Bài học • 12 Giờ",
+      progress: module1Progress,
+      completedCount: globalStats.module1CompletedCount,
+      icon: <Shield className="w-5 h-5 text-[#4edea3]" />
+    },
+    {
+      id: 2,
+      title: "Mô-đun 2: Bảo mật ứng dụng Web",
+      desc: "Hiểm họa mạng OWASP Top 10, cấu trúc lỗi SQL Injection, bảo mật cookie và xác thực.",
+      difficulty: "Trung bình",
+      difficultyClass: "text-[#fed639] bg-[#3b2f00]",
+      timing: "12 Bài học • 15 Giờ",
+      progress: module2Progress,
+      completedCount: globalStats.module2CompletedCount,
+      icon: <Terminal className="w-5 h-5 text-[#fed639]" />
+    },
+    {
+      id: 3,
+      title: "Mô-đun 3: An ninh hạ tầng mạng",
+      desc: "Giám sát luồng an ninh với Snort, triển khai IDS/IPS chủ động và phân tách DMZ.",
+      difficulty: "Trung bình",
+      difficultyClass: "text-[#fed639] bg-[#3b2f00]",
+      timing: "14 Bài học • 18 Giờ",
+      progress: module3Progress,
+      completedCount: globalStats.module3CompletedCount,
+      icon: <History className="w-5 h-5 text-[#00f0ff]" />
+    },
+    {
+      id: 4,
+      title: "Mô-đun 4: Mật mã học nâng cao & RSA",
+      desc: "Chi tiết toán học của số nguyên tố p, q, phi Euler và giải thuật RSA, cách sinh Private/Public Key.",
+      difficulty: "Khó",
+      difficultyClass: "text-[#ffb4ab] bg-[#690005]/40",
+      timing: "15 Bài học • 25 Giờ",
+      progress: module4Progress,
+      completedCount: globalStats.module4CompletedCount,
+      icon: <Brain className="w-5 h-5 text-[#ffb4ab]" />
+    },
+    {
+      id: 5,
+      title: "Mô-đun 5: Trắc nghiệm Chuyên sâu Chuyên gia",
+      desc: "Đại học Syllabus - Bộ 40 câu trắc nghiệm chuyên sâu đa khía cạnh giúp đánh giá toàn diện năng lực lý thuyết an toàn và thực nghiệm.",
+      difficulty: "Rất khó",
+      difficultyClass: "text-[#ffb4ab] bg-[#690005]/40",
+      timing: "40 Câu hỏi tốt nghiệp",
+      progress: module5Progress,
+      completedCount: globalStats.module5CompletedCount,
+      icon: <Award className="w-5 h-5 text-[#fcd34d]" />
+    },
+    {
+      id: 6,
+      title: "Mô-đun 6: Mật mã học Toàn diện",
+      desc: "Bộ 60 câu hỏi trắc nghiệm chuyên biệt về giải thuật mật mã cổ điển, mật mã đối xứng, mã hóa công khai RSA và trao đổi khóa mật.",
+      difficulty: "Khó",
+      difficultyClass: "text-[#ffb4ab] bg-[#690005]/40",
+      timing: "60 Câu hỏi thực nghiệm",
+      progress: module6Progress,
+      completedCount: globalStats.module6CompletedCount,
+      icon: <Award className="w-5 h-5 text-[#00f0ff]" />
     }
-  }, [toast.show]);
+  ], [module1Progress, module2Progress, module3Progress, module4Progress, module5Progress, module6Progress, globalStats]);
 
-  // Copy code to clipboard handler
-  const copyPythonCode = () => {
-    const codeText = `# Thư viện mã hóa cơ bản
-from Crypto.PublicKey import RSA
+  const MODULE_LECTURES: Record<number, { tag: string; title: string; completedCount: number; text: React.ReactNode; codeTitle: string; codeFilename: string; code: string }> = useMemo(() => ({
+    1: {
+      tag: "Mô-đun 01: Nhập môn Mã hóa & Đối xứng",
+      title: "Mật mã học đối xứng & Tiêu chuẩn AES",
+      completedCount: globalStats.module1CompletedCount,
+      text: (
+        <>
+          <p>
+            <strong>Cryptography (Mật mã đối xứng)</strong> là nền tảng đầu tiên nhất trong an toàn thông tin, nơi khóa dùng mã hóa cũng chính là khóa giải mã. AES (Advanced Encryption Standard) và DES là các đại diện tiêu chuẩn vàng của mật mã khóa bí mật này.
+          </p>
+          <div className="bg-[#0d1c2d] border border-[#1c2b3c] p-4 rounded-lg space-y-3">
+            <h4 className="text-white font-bold text-xs md:text-sm flex items-center gap-2">
+              <Brain className="w-4 h-4 text-[#00f0ff]" />
+              Cơ chế hoán vị và thay thế của AES
+            </h4>
+            <p className="text-xs text-[#b9cacb]">
+              AES xử lý khối dữ liệu 128-bit sử dụng ba kích thước khóa khác nhau: 128, 192, và 256-bit qua nhiều vòng lặp toán học khắt khe:
+            </p>
+            <ul className="list-disc pl-5 space-y-2 text-xs text-[#b9cacb]">
+              <li><strong>SubBytes:</strong> Thay thế phi tuyến từng byte qua bảng tra S-box cố định.</li>
+              <li><strong>ShiftRows:</strong> Dịch chuyển tuần hoàn các hàng trong ma trận trạng thái (State layout).</li>
+              <li><strong>MixColumns:</strong> Nhân ma trận State với một đa thức cố định nhầm khuếch tán triệt để thông tin gốc.</li>
+              <li><strong>AddRoundKey:</strong> Thực hiện phép toán logic XOR ma trận với các khóa vòng con sinh ra từ khóa chính.</li>
+            </ul>
+          </div>
+        </>
+      ),
+      codeTitle: "Mã hóa AES-CBC minh họa (Python)",
+      codeFilename: "aes_cbc_demo.py",
+      code: `from Crypto.Cipher import AES
+from Crypto.Random import get_random_bytes
+
+# 1. Tạo khóa bí mật 256-bit ngẫu nhiên
+key = get_random_bytes(32)
+data = b"Du lieu mat can truyen di an toan"
+
+# 2. Khởi tạo AES chế độ CBC
+cipher = AES.new(key, AES.MODE_CBC)
+iv = cipher.iv
+ciphertext = cipher.encrypt(data + b" " * (16 - len(data) % 16)) # PKCS7 padding
+
+print(f"IV: {iv.hex()}")
+print(f"Bản mã hóa: {ciphertext.hex()[:50]}...")`
+    },
+    2: {
+      tag: "Mô-đun 02: Bảo mật ứng dụng Web",
+      title: "Hiểm họa OWASP Top 10 & SQL Injection",
+      completedCount: globalStats.module2CompletedCount,
+      text: (
+        <>
+          <p>
+            <strong>OWASP (Open Web Application Security Project)</strong> liên tục đánh giá và xếp hạng các rủi ro bảo mật ứng dụng web nghiêm trọng nhất. Trong đó lỗi injection, cấu hình sai TLS, và tấn công XSS luôn trực chờ đe dọa cơ sở dữ liệu.
+          </p>
+          <div className="bg-[#0d1c2d] border border-[#1c2b3c] p-4 rounded-lg space-y-3">
+            <h4 className="text-white font-bold text-xs md:text-sm flex items-center gap-2">
+              <Shield className="w-4 h-4 text-[#10b981]" />
+              Bản chất của lỗi SQL Injection (SQLi)
+            </h4>
+            <p className="text-xs text-[#b9cacb]">
+              SQLi xảy ra khi dữ liệu người dùng gửi lên bị thông dịch nhầm thành các lệnh điều khiển SQL thực thi trực tiếp trên hệ thống cơ sở dữ liệu:
+            </p>
+            <ul className="list-disc pl-5 space-y-2 text-xs text-[#b9cacb]">
+              <li><strong>Lọc đầu vào hời hợt:</strong> Ứng dụng nối chuỗi trực tiếp mà không dùng Prepared Statements.</li>
+              <li><strong>Vượt mặt xác thực:</strong> Kẻ tấn công nhập chuỗi <code className="text-[#00f0ff] font-mono">{"' OR '1'='1"}</code> để biến truy vấn đăng nhập luôn đúng.</li>
+              <li><strong>Phòng chống hiệu quả:</strong> Sử dụng ràng buộc <code className="text-emerald-400 font-mono">Parameterized Queries</code>, thiết lập phân quyền database tối giản hành vi (principle of least privilege).</li>
+            </ul>
+          </div>
+        </>
+      ),
+      codeTitle: "Phòng chống SQL Injection với Prepared SQL Statement (NodeJS)",
+      codeFilename: "secure_query.js",
+      code: `// Sử dụng Parameterized Queries an toàn tuyệt đối
+const userId = req.body.userId;
+const query = 'SELECT username, email FROM users WHERE id = ?';
+
+db.query(query, [userId], (err, results) => {
+  if (err) throw err;
+  res.json(results);
+});`
+    },
+    3: {
+      tag: "Mô-đun 03: An ninh hạ tầng mạng",
+      title: "IDS/IPS và Kỹ thuật Phân tách vùng mạng",
+      completedCount: globalStats.module3CompletedCount,
+      text: (
+        <>
+          <p>
+            <strong>An ninh hạ tầng mạng</strong> bao gồm các chính sách định tuyến lưu lượng an toàn, thiết lập tường lửa thế hệ mới (NGFW), hệ thống giám sát IDS (Intrusion Detection System) và IPS (Intrusion Prevention System) để ngăn chặn truy cập trái phép.
+          </p>
+          <div className="bg-[#0d1c2d] border border-[#1c2b3c] p-4 rounded-lg space-y-3">
+            <h4 className="text-white font-bold text-xs md:text-sm flex items-center gap-2">
+              <Terminal className="w-4 h-4 text-[#fed639]" />
+              IDS so với IPS: Khác biệt và Triển khai
+            </h4>
+            <p className="text-xs text-[#b9cacb]">
+              Hiểu rõ cơ chế hoạt động giúp ngăn lọt lưới kẻ xấu mà không ảnh hưởng tới chất lượng băng thông đường truyền:
+            </p>
+            <ul className="list-disc pl-5 space-y-2 text-xs text-[#b9cacb]">
+              <li><strong>IDS (Bị động):</strong> Lắng nghe trên port mirror (SPAN Port), gửi cảnh báo (Alert) khi khớp chữ ký mã độc hoặc bất thường.</li>
+              <li><strong>IPS (Chủ động):</strong> Đứng trung gian trực tiếp trên luồng mạng (In-line), có khả năng drop packet nguy hại kịp thời để tự vệ.</li>
+              <li><strong>Phân tách vùng DMZ (DeMilitarized Zone):</strong> Đặt máy chủ công khai tách rời với mạng nội bộ nhạy cảm.</li>
+            </ul>
+          </div>
+        </>
+      ),
+      codeTitle: "Cấu hình Luật Snort kiểm tra giao thức TCP (Config)",
+      codeFilename: "snort_rules.conf",
+      code: `# Cảnh báo khi có nỗ lực quét cổng TCP nguy ngờ 
+alert tcp $EXTERNAL_NET any -> $HOME_NET 22 (msg:"Nghi van scan SSH thong qua Snort"; flags:S; threshold:type limit, track by_src, count 1, seconds 60; sid:1000001; rev:1;)`
+    },
+    4: {
+      tag: "Mô-đun 04: Mật mã học nâng cao & RSA",
+      title: "Thuật toán Mã hóa Bất đối xứng RSA",
+      completedCount: globalStats.module4CompletedCount,
+      text: (
+        <>
+          <p>
+            <strong>RSA (Rivest–Shamir–Adleman)</strong> là một trong các hệ thống mã hóa công khai (mật mã bất đối xứng) đầu tiên và được sử dụng rộng rãi hàng đầu thế giới ngày nay để truyền dữ liệu an toàn. Nó liên quan chặt chẽ tới độ phức tạp rất lớn của bài toán phân tích thừa số nguyên tố cho tích hai số nguyên gốc lớn.
+          </p>
+          <div className="bg-[#0d1c2d] border border-[#1c2b3c] p-4 rounded-lg space-y-3" id="math_principle_block">
+            <h4 className="text-white font-bold text-xs md:text-sm flex items-center gap-2">
+              <Brain className="w-4 h-4 text-[#00f0ff]" />
+              Nguyên lý toán học của RSA
+            </h4>
+            <p className="text-xs text-[#b9cacb]">
+              Quy trình thiết lập cặp khóa RSA bao gồm 4 bước đơn giản:
+            </p>
+            <ul className="list-disc pl-5 space-y-2 text-xs text-[#b9cacb]">
+              <li><strong>Tạo khóa (Key generation):</strong> Chọn 2 số nguyên tố siêu lớn bí mật là <code className="text-[#00f0ff] font-mono">p</code> và <code className="text-[#00f0ff] font-mono">q</code>. Tính mô-đun <code className="text-white font-mono">n = p * q</code> và hàm phi Euler <code className="text-white font-mono">φ(n) = (p-1)*(q-1)</code>. Tìm e và d sao cho <code className="text-white font-mono">d * e ≡ 1 (mod φ(n))</code>.</li>
+              <li><strong>Phân phối khóa (Key distribution):</strong> Khóa công khai gồm đại lượng <code className="font-mono text-[#00f0ff]">(e, n)</code> được chia sẻ rộng rãi. Khóa bí mật <code className="font-mono text-[#ffb4ab]">(d, n)</code> giữ kín tuyệt đối.</li>
+              <li><strong>Mã hóa (Encryption):</strong> Bản rõ M được chuyển thành bản mã C nhờ công thức: <code className="text-[#4edea3] font-mono block py-1 bg-[#051424] text-center my-1">C ≡ M^e (mod n)</code></li>
+              <li><strong>Giải mã (Decryption):</strong> Có được bản mã C, chủ quản dùng khóa bí mật d để khôi phục lại M: <code className="text-[#4edea3] font-mono block py-1 bg-[#051424] text-center my-1">M ≡ C^d (mod n)</code></li>
+            </ul>
+          </div>
+        </>
+      ),
+      codeTitle: "Script minh hoa ma hoa RSA khoa sinh ngau nhien (Python)",
+      codeFilename: "rsa_demo.py",
+      code: `from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
 
 # 1. Tạo cặp khóa RSA 2048-bit
@@ -957,225 +1615,421 @@ message = b"Thong tin tuyet mat ve InfosecAI"
 cipher = PKCS1_OAEP.new(RSA.import_key(public_key))
 ciphertext = cipher.encrypt(message)
 
-print(f"Dữ liệu đã mã hóa: {ciphertext.hex()[:50]}...")`;
+print(f"Dữ liệu đã mã hóa: {ciphertext.hex()[:50]}...")`
+    },
+    5: {
+      tag: "Mô-đun 05: Trắc nghiệm Chuyên sâu Chuyên gia",
+      title: "Chứng nhận Chuyên gia An toàn mạng & Mật mã học",
+      completedCount: globalStats.module5CompletedCount,
+      text: (
+        <>
+          <p>
+            Chào mừng bạn đến với <strong>Module Đánh giá Năng lực Toàn diện Chuyên gia</strong> của VWA. Bài thi trắc nghiệm này tổng hợp và nâng tầm nâng cao tất cả các kiến thức bảo mật, tấn công, phòng thủ, mật mã hóa và chính sách an ninh mạng.
+          </p>
+          <div className="bg-[#0d1c2d] border border-[#1c2b3c] p-4 rounded-lg space-y-3">
+            <h4 className="text-white font-bold text-xs md:text-sm flex items-center gap-2">
+              <Award className="w-4 h-4 text-[#fcd34d]" />
+              Tiêu chuẩn Tốt Nghiệp Chuyên Gia
+            </h4>
+            <p className="text-xs text-[#b9cacb]">
+              Thử thách an ninh mạng đa chiều tích hợp tri thức:
+            </p>
+            <ul className="list-disc pl-5 space-y-2 text-xs text-[#b9cacb]">
+              <li><strong>Cryptography:</strong> So sánh ECC, RSA, Symmetric stream, block ciphers thực tế.</li>
+              <li><strong>Network & Appsec:</strong> Phân tích lỗi zero-day, rủi ro bảo mật API và thiết lập phân mảnh phòng vệ mạng.</li>
+              <li><strong>AI Security:</strong> Quản trị dữ liệu lớn LLMs khi kết hợp mô hình bảo mật Zero Trust.</li>
+            </ul>
+          </div>
+        </>
+      ),
+      codeTitle: "Script phát hiện xâm nhập AI Security Logs Analyzer (Python)",
+      codeFilename: "ai_incident_response.py",
+      code: `import json
 
-    navigator.clipboard.writeText(codeText);
-    setCopiedCode(true);
-    setTimeout(() => {
-      setCopiedCode(false);
-    }, 2000);
+def analyze_logs(log_file):
+    with open(log_file, "r") as f:
+        for idx, line in enumerate(f):
+            log = json.loads(line)
+            if "prompt_injection" in log.get("labels", []):
+                print(f"[CẢNH BÁO] Phát hiện Prompt Injection tại dòng #{idx}: {log['payload']}")
+
+analyze_logs("security_events.jsonl")`
+    },
+    6: {
+      tag: "Mô-đun 06: Mật mã học Toàn diện",
+      title: "Mật mã học toàn diện & Thực hành Chuyên sâu",
+      completedCount: globalStats.module6CompletedCount,
+      text: (
+        <>
+          <p>
+            <strong>Mô-đun 6 (Mật mã học Toàn diện)</strong> là chương trình tập trung học tập sâu rộng và kiểm nghiệm thực tế các giải thuật mật mã cổ điển, mật mã học đối xứng (AES, DES) cho tới các hệ thống mật mã công khai hiện đại (RSA, ECC), mật mã song song và trao đổi khóa (Diffie-Hellman).
+          </p>
+          <div className="bg-[#0d1c2d] border border-[#1c2b3c] p-4 rounded-lg space-y-3">
+            <h4 className="text-white font-bold text-xs md:text-sm flex items-center gap-2">
+              <Award className="w-4 h-4 text-[#00f0ff]" />
+              Tiêu chuẩn Đo lường Năng lực Toàn diện
+            </h4>
+            <ul className="list-disc pl-5 space-y-2 text-xs text-[#b9cacb]">
+              <li><strong>Phân tích hệ thống:</strong> Đánh giá mức độ an toàn phi tuyến tính, cấu xạ S-Box, thuật toán mã dòng và mã tự vệ chống tấn công thám mã.</li>
+              <li><strong>Mật mã khóa công khai:</strong> Chứng minh tính đúng đắn toán học của bài toán căn nguyên tố, thặng dư Trung Hoa (CRT) và giải thuật RSA.</li>
+              <li><strong>Ứng dụng thực tế:</strong> Tích hợp giao tiếp HTTPS TLS 1.3, trao đổi khóa mật bảo mật và ký số chữ ký điện tử tin cậy.</li>
+            </ul>
+          </div>
+        </>
+      ),
+      codeTitle: "Mã hóa & Giải mã Vigenère Chuyên sâu (Python)",
+      codeFilename: "vigenere_crypto.py",
+      code: `def vigenere_encrypt(plaintext, key):
+    key = key.upper()
+    ciphertext = []
+    for i, char in enumerate(plaintext.upper()):
+        if char.isalpha():
+            shift = ord(key[i % len(key)]) - 65
+            cipher_char = chr((ord(char) - 65 + shift) % 26 + 65)
+            ciphertext.append(cipher_char)
+        else:
+            ciphertext.append(char)
+    return "".join(ciphertext)
+
+msg = "VWA CRYPTO DEEP DIVE"
+secret_key = "SECURITY"
+encrypted = vigenere_encrypt(msg, secret_key)
+print(f"Bản mã hóa Vigenere: {encrypted}")`
+    }
+  }), [globalStats]);
+
+  // Load metrics back on mounting
+  useEffect(() => {
+    /* eslint-disable react-hooks/set-state-in-effect */
+    if (typeof window !== 'undefined') {
+      const savedHistory = localStorage.getItem('vwa_quiz_history');
+      if (savedHistory) {
+        try { setQuizHistory(JSON.parse(savedHistory)); } catch (e) { console.error(e); }
+      }
+      const savedXP = localStorage.getItem('vwa_user_xp');
+      if (savedXP) setUserXP(Number(savedXP));
+      const savedLevel = localStorage.getItem('vwa_user_level');
+      if (savedLevel) setUserLevel(Number(savedLevel));
+      
+      const p1 = localStorage.getItem('vwa_progress_1'); if (p1) setModule1Progress(Number(p1));
+      const p2 = localStorage.getItem('vwa_progress_2'); if (p2) setModule2Progress(Number(p2));
+      const p3 = localStorage.getItem('vwa_progress_3'); if (p3) setModule3Progress(Number(p3));
+      const p4 = localStorage.getItem('vwa_progress_4'); if (p4) setModule4Progress(Number(p4));
+      const p5 = localStorage.getItem('vwa_progress_5'); if (p5) setModule5Progress(Number(p5));
+      const p6 = localStorage.getItem('vwa_progress_6'); if (p6) setModule6Progress(Number(p6));
+      
+      const savedCompleted = localStorage.getItem('vwa_completed_quizzes');
+      if (savedCompleted) {
+        try { setCompletedQuizzes(JSON.parse(savedCompleted)); } catch (e) { console.error(e); }
+      }
+    }
+    /* eslint-enable react-hooks/set-state-in-effect */
+  }, []);
+
+  const getSuggestionChipsForModule = (moduleId: number | null) => {
+    switch (moduleId) {
+      case 1:
+        return [
+          { text: "🔍 So sánh AES và DES", prompt: "Hãy so sánh sự khác nhau về độ an toàn và tốc độ giữa AES và DES một cách ngắn gọn súc tích." },
+          { text: "💡 Ví dụ AES thực tế", prompt: "Hãy cho tôi một ví dụ thực tế cực kỳ dễ hiểu về cách hoạt động của mã hóa đối xứng AES." },
+          { text: "⚡ Thử thách AES", prompt: "Hãy đặt một câu đố vui trắc nghiệm nhỏ kiểm tra hiểu biết của tôi về cách hoạt động và các bước vòng của AES!" }
+        ];
+      case 2:
+        return [
+          { text: "🔍 Ngăn chặn SQLi", prompt: "Giải thích phương pháp dùng Parameterized Query để phòng chống SQL Injection (SQLi) một cách đơn giản, ngắn gọn." },
+          { text: "💡 Tấn công XSS", prompt: "Tấn công XSS hoạt động như thế nào và làm thế nào để lập trình viên phòng chống lỗi này ở phía Frontend?" },
+          { text: "⚡ Ôn tập OWASP", prompt: "Hãy đặt một câu hỏi nhỏ để kiểm tra tôi về các lỗ hổng phổ biến thuộc danh sách OWASP Top 10!" }
+        ];
+      case 3:
+        return [
+          { text: "🔍 Snort & IPS/IDS", prompt: "Hệ thống IDS và IPS khác nhau điểm gì cốt lõi? Giải thích ý nghĩa một dòng luật (rule) cơ bản trong hệ thống Snort." },
+          { text: "💡 Phân tách DMZ", prompt: "Tại sao doanh nghiệp cần phân tách luồng mạng thành các vùng DMZ để bảo vệ máy chủ cơ sở dữ liệu nội bộ?" },
+          { text: "⚡ Test Snort rule", prompt: "Hãy ra một đề thi trắc nghiệm ngắn về thiết lập tường lửa phân tầng mạng và thiết lập Snort rule để tôi luyện tập!" }
+        ];
+      case 4:
+        return [
+          { text: "🔍 Số nguyên tố p, q", prompt: "Tại sao RSA cần các số nguyên tố p và q cực kỳ lớn và hàm phi Euler có vai trò như thế nào trong tạo khóa?" },
+          { text: "💡 Ví dụ RSA", prompt: "Hãy cho tôi một ví dụ thực tế cực kỳ dễ hiểu về cách hoạt động của mã hóa RSA." },
+          { text: "⚡ Thử thách RSA", prompt: "Hãy đặt một câu đố nhỏ để kiểm tra tôi về thuật toán RSA!" }
+        ];
+      case 5:
+        return [
+          { text: "🔍 Luyện thi chuyên gia", prompt: "Hãy tóm tắt cho tôi các điểm trọng tâm cần đặc biệt lưu ý khi làm bài trắc nghiệm chuyên sâu chuyên gia bảo mật." },
+          { text: "💡 Kỹ năng thực nghiệm", prompt: "Làm thế nào để áp dụng lý thuyết mật mã và an ninh mạng để tăng cường hệ thống phòng thủ thực tế?" },
+          { text: "⚡ Câu hỏi hóc búa", prompt: "Hãy sinh một câu hỏi trắc nghiệm hóc búa ở mức độ chuyên gia kèm giải thích chi tiết đáp án để tôi thử sức!" }
+        ];
+      case 6:
+        return [
+          { text: "🔍 Mật mã học toàn diện", prompt: "Hãy tóm tắt súc tích các phương pháp thám mã cổ điển như Vigenère và cách thức các thuật toán hiện đại khắc phục nó." },
+          { text: "💡 Ký số TLS 1.3", prompt: "Ký số băm SHA và trao đổi khóa hoàn hảo bí mật diễn ra như thế nào trong giao tiếp HTTPS/TLS 1.3?" },
+          { text: "⚡ Đố vui mật mã", prompt: "Hãy thách đấu tôi bằng một bài tập giải mật mã hoặc câu đố trắc nghiệm logic hóc búa nhất về mật mã học song song!" }
+        ];
+      default:
+        return [
+          { text: "💡 Ví dụ thực tế", prompt: "Hãy cho tôi một ví dụ thực tế cực kỳ dễ hiểu về cách hoạt động của mã hóa RSA." },
+          { text: "✏️ Đơn giản hóa", prompt: "Giải thích RSA như thể tôi là học sinh cấp 2." },
+          { text: "⚡ Kiểm tra tôi", prompt: "Hãy đặt một câu đố nhỏ để kiểm tra tôi về thuật toán RSA!" }
+        ];
+    }
   };
 
-  // Chat message sending core logic
-  const handleSendMessage = (messageText: string) => {
-    if (!messageText.trim()) return;
+  // AI Chat Sandbox environment active properties
+  const [chatMessages, setChatMessages] = useState<{ sender: 'bot' | 'user'; text: string; time: string }[]>([
+    { 
+      sender: 'bot', 
+      text: 'Chào mừng bạn đến với Sân chơi Học tập Trợ lý AI! Tôi là Trợ lý InfoSec VWA luôn trực chiến hỗ trợ giải mã thuật toán, OWASP, và an ninh hệ thống 24/7. Hãy nhập câu hỏi của bạn hoặc chọn các gợi ý học tập nhanh nhé!', 
+      time: 'Vừa xong' 
+    }
+  ]);
+  const [chatInput, setChatInput] = useState('');
+  const [aiTyping, setAiTyping] = useState(false);
+  const chatBottomRef = useRef<HTMLDivElement>(null);
 
-    const currentTimeString = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+  // Submits question to remote AI Gateway or Predefined Local fallback sandbox
+  const handleSendMessage = async (textToSend: string) => {
+    if (!textToSend.trim()) return;
     
-    // 1. Add User message
-    const updatedMessages = [...chatMessages, { sender: 'user' as const, text: messageText, time: currentTimeString }];
-    setChatMessages(updatedMessages);
+    const userMsg = {
+      sender: 'user' as const,
+      text: textToSend,
+      time: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })
+    };
+    
+    setChatMessages(prev => [...prev, userMsg]);
     setChatInput('');
-
-    // 2. Add dynamic bot thinking state
     setAiTyping(true);
-
+    
     setTimeout(() => {
-      const replyText = generateAIBotResponse(messageText);
-      setAiTyping(false);
-      setChatMessages(prev => [...prev, { 
-        sender: 'bot' as const, 
-        text: replyText, 
-        time: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) 
+      chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+
+    try {
+      const apiMessages = chatMessages.map(m => ({
+        role: m.sender === 'user' ? 'user' as const : 'model' as const,
+        parts: [{ text: m.text }]
+      }));
+      apiMessages.push({
+        role: 'user' as const,
+        parts: [{ text: textToSend }]
+      });
+
+      const res = await fetch('/api/gemini', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          messages: apiMessages,
+          systemInstruction: "Bạn là Trợ lý AI học tập An ninh mạng (VWA InfoSec Assistant) xuất sắc. Nhiệm vụ của bạn là giải đáp tất cả thắc mắc của học viên mà không bị giới hạn chủ đề. Hãy viết câu trả lời thật ngắn gọn, súc tích, dễ hiểu, đi thẳng vào câu hỏi cốt lõi, sử dụng các gạch đầu dòng rõ ràng để người dùng dễ theo dõi. Tuyệt đối không trả lời dông dài hoặc máy móc."
+        })
+      });
+
+      const data = await res.json();
+      if (data.text) {
+        setChatMessages(prev => [...prev, {
+          sender: 'bot',
+          text: data.text,
+          time: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })
+        }]);
+      } else {
+        throw new Error(data.error);
+      }
+    } catch (err) {
+      console.warn("Dịch vụ AI bảo mật trực tuyến bận, đang đưa ra giải pháp băm từ bồ đề cục bộ:", err);
+      const fallbackText = generateAIBotResponse(textToSend);
+      setChatMessages(prev => [...prev, {
+        sender: 'bot',
+        text: fallbackText,
+        time: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })
       }]);
-    }, 1200);
+    } finally {
+      setAiTyping(false);
+      setTimeout(() => {
+        chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
   };
 
-  // Auto handle search box from Home to AI Chat
+  const handleSuggestionClick = (text: string) => {
+    handleSendMessage(text);
+  };
+
   const handleAIPromptSplit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchPrompt.trim()) return;
-    
-    // Automatically open AI chat or detailed module and trigger question
-    setActiveTab('chat');
     handleSendMessage(searchPrompt);
     setSearchPrompt('');
+    setActiveTab('chat');
   };
 
-  // Suggestion chips action
-  const handleSuggestionClick = (promptValue: string) => {
-    handleSendMessage(promptValue);
-  };
+  // Interactive Quiz Engine State Properties
+  const [selectedQuizModule, setSelectedQuizModule] = useState<number>(4);
+  const [quizState, setQuizState] = useState<'splash' | 'playing' | 'result' | 'review'>('splash');
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [selectedAnswers, setSelectedAnswers] = useState<{ [key: number]: number }>({});
+  const [showExplanation, setShowExplanation] = useState(false);
+  const [quizScore, setQuizScore] = useState(0);
+  const [incorrectQuestionIndices, setIncorrectQuestionIndices] = useState<number[]>([]);
+  const [reviewIndex, setReviewIndex] = useState(0);
+  const [toast, setToast] = useState<{ show: boolean; title: string; message: string }>({ show: false, title: '', message: '' });
 
-  // Start active quiz
+  const activeQuestions = useMemo(() => {
+    if (selectedQuizModule === 6) {
+      return MODULE_QUESTIONS.slice(0, 60);
+    }
+    if (selectedQuizModule === 5) {
+      return MODULE_QUESTIONS.slice(0, 40);
+    }
+    const startIndex = (selectedQuizModule - 1) * 12;
+    return MODULE_QUESTIONS.slice(startIndex, startIndex + 12);
+  }, [selectedQuizModule]);
+
   const startQuiz = () => {
     setQuizState('playing');
     setCurrentQuestionIndex(0);
-    setSelectedAnswers([]);
-    setQuizScore(0);
+    setSelectedAnswers({});
     setShowExplanation(false);
+    setQuizScore(0);
+    setIncorrectQuestionIndices([]);
   };
 
-  // Choose quiz option
-  const handleSelectOption = (optionIndex: number) => {
-    const updated = [...selectedAnswers];
-    updated[currentQuestionIndex] = optionIndex;
-    setSelectedAnswers(updated);
+  const resetQuiz = () => {
+    setQuizState('splash');
+    setCurrentQuestionIndex(0);
+    setSelectedAnswers({});
+    setShowExplanation(false);
+    setQuizScore(0);
   };
 
-  // Proceed question
+  const handleSelectOption = (idx: number) => {
+    setSelectedAnswers(prev => ({ ...prev, [currentQuestionIndex]: idx }));
+  };
+
   const handleNextQuestion = () => {
-    if (selectedAnswers[currentQuestionIndex] === undefined) return;
+    setShowExplanation(true);
+  };
 
-    // Evaluate answer correctness
-    const isCorrect = selectedAnswers[currentQuestionIndex] === MODULE_QUESTIONS[currentQuestionIndex].correctAnswerIndex;
+  const handleProceedNext = async () => {
+    const isCorrect = selectedAnswers[currentQuestionIndex] === activeQuestions[currentQuestionIndex]?.correctAnswerIndex;
     if (isCorrect) {
       setQuizScore(prev => prev + 1);
-    }
-
-    setShowExplanation(true);
-
-    // Live progress updates as user progresses through the quiz
-    const calculatedProg = Math.round(((currentQuestionIndex + 1) / MODULE_QUESTIONS.length) * 100);
-    setModule4Progress(calculatedProg);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('infosec_module4_progress', calculatedProg.toString());
-    }
-  };
-
-  const handleProceedNext = () => {
-    setShowExplanation(false);
-    if (currentQuestionIndex < MODULE_QUESTIONS.length - 1) {
-      setCurrentQuestionIndex(prev => prev + 1);
     } else {
-      // Evaluate quiz final results
-      setQuizState('result');
-      const finalScore = selectedAnswers.reduce((acc, ans, idx) => {
-        return acc + (ans === MODULE_QUESTIONS[idx].correctAnswerIndex ? 1 : 0);
-      }, 0);
+      setIncorrectQuestionIndices(prev => [...prev, currentQuestionIndex]);
+    }
+    
+    if (currentQuestionIndex < activeQuestions.length - 1) {
+      setCurrentQuestionIndex(prev => prev + 1);
+      setShowExplanation(false);
+    } else {
+      const finalScore = quizScore + (isCorrect ? 1 : 0);
       setQuizScore(finalScore);
-
-      // Create list of incorrect answers for personal review history
-      const incorrectList = MODULE_QUESTIONS.map((q, idx) => {
-        const selectedIdx = selectedAnswers[idx];
-        const isIncorrect = selectedIdx !== undefined && selectedIdx !== q.correctAnswerIndex;
-        if (isIncorrect) {
+      
+      const isPassed = finalScore >= Math.ceil(activeQuestions.length * 0.8);
+      
+      const newAttempt = {
+        timestamp: new Date().toLocaleDateString('vi-VN') + ' ' + new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
+        score: finalScore,
+        totalQuestions: activeQuestions.length,
+        incorrectQuestions: [
+          ...incorrectQuestionIndices,
+          ...(!isCorrect ? [currentQuestionIndex] : [])
+        ].map(idx => {
+          const q = activeQuestions[idx];
           return {
             id: q.id,
-            questionText: q.questionText,
-            selectedAnswerText: q.options[selectedIdx] !== undefined ? q.options[selectedIdx] : "Không chọn",
-            correctAnswerText: q.options[q.correctAnswerIndex],
-            explanation: q.explanation || ""
+            questionText: q?.questionText || '',
+            selectedAnswerText: q?.options[selectedAnswers[idx]] || 'Không chọn',
+            correctAnswerText: q?.options[q?.correctAnswerIndex] || '',
+            explanation: q?.explanation || ''
           };
-        }
-        return null;
-      }).filter(item => item !== null) as Array<{
-        id: number;
-        questionText: string;
-        selectedAnswerText: string;
-        correctAnswerText: string;
-        explanation: string;
-      }>;
-
-      const newAttempt: QuizAttempt = {
-        timestamp: new Date().toLocaleString('vi-VN'),
-        score: finalScore,
-        totalQuestions: MODULE_QUESTIONS.length,
-        incorrectQuestions: incorrectList
+        })
       };
-
-      const nextAttemptsCount = quizAttemptsCount + 1;
-      setQuizAttemptsCount(nextAttemptsCount);
+      
       const updatedHistory = [newAttempt, ...quizHistory];
       setQuizHistory(updatedHistory);
-
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('infosec_quiz_attempts_count', nextAttemptsCount.toString());
-        localStorage.setItem('infosec_quiz_history', JSON.stringify(updatedHistory));
-      }
+      localStorage.setItem('vwa_quiz_history', JSON.stringify(updatedHistory));
       
-      // If student passes with 80% score (48/60)
-      if (finalScore >= 48) {
-        // Upgrade individual states
-        const xpBonus = 150;
-        const newXP = userXP + xpBonus;
+      if (isPassed) {
+        const xpEarned = 150 + (activeQuestions.length * 10);
+        const newXP = userXP + xpEarned;
         setUserXP(newXP);
-        setModule4Progress(100);
+        localStorage.setItem('vwa_user_xp', String(newXP));
         
-        const updatedQuizzes = { ...completedQuizzes, 4: true };
-        setCompletedQuizzes(updatedQuizzes);
-
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('infosec_xp', newXP.toString());
-          localStorage.setItem('infosec_module4_progress', '100');
-          localStorage.setItem('infosec_completed_quizzes', JSON.stringify(updatedQuizzes));
-        }
-
-        // Trigger celebratory toast notification
-        if (finalScore === 60) {
+        const newLevel = Math.floor(newXP / 500) + 1;
+        if (newLevel > userLevel) {
+          setUserLevel(newLevel);
+          localStorage.setItem('vwa_user_level', String(newLevel));
           setToast({
             show: true,
-            title: "Xuất sắc tuyệt đối! 🎉",
-            message: "Chúc mừng bạn đã hoàn thành xuất sắc 60/60 câu trắc nghiệm lý thuyết tối đa! Bạn đã chính thức tốt nghiệp mô-đun RSA.",
-            type: "success"
+            title: "Thăng cấp thành công! 🎉",
+            message: `Bạn đã đạt cấp độ ${newLevel} nhờ hoàn thiện xuất sắc bài kiểm tra!`
           });
         } else {
           setToast({
             show: true,
-            title: "Đạt chuẩn và Hoàn thành! 🏆",
-            message: `Chúc mừng bạn đã đạt điểm chuẩn với ${finalScore}/60 câu đúng (80%+). Bạn đã hoàn thành xuất sắc mô-đun mật mã học RSA!`,
-            type: "success"
+            title: "Vượt qua bài thi! 🎖️",
+            message: `Bạn nhận được +${xpEarned} XP và một chứng nhận điện tử cho mô-đun này!`
           });
         }
-
-        // Call current global firebase progress incrementer!
-        completeModuleOnFirebase(4);
+        
+        const newCompleted = { ...completedQuizzes, [selectedQuizModule]: true };
+        setCompletedQuizzes(newCompleted);
+        localStorage.setItem('vwa_completed_quizzes', JSON.stringify(newCompleted));
+        
+        if (selectedQuizModule === 1) setModule1Progress(100);
+        if (selectedQuizModule === 2) setModule2Progress(100);
+        if (selectedQuizModule === 3) setModule3Progress(100);
+        if (selectedQuizModule === 4) setModule4Progress(100);
+        if (selectedQuizModule === 5) setModule5Progress(100);
+        if (selectedQuizModule === 6) setModule6Progress(100);
+        
+        localStorage.setItem('vwa_progress_1', selectedQuizModule === 1 ? '100' : String(module1Progress));
+        localStorage.setItem('vwa_progress_2', selectedQuizModule === 2 ? '100' : String(module2Progress));
+        localStorage.setItem('vwa_progress_3', selectedQuizModule === 3 ? '100' : String(module3Progress));
+        localStorage.setItem('vwa_progress_4', selectedQuizModule === 4 ? '100' : String(module4Progress));
+        localStorage.setItem('vwa_progress_5', selectedQuizModule === 5 ? '100' : String(module5Progress));
+        localStorage.setItem('vwa_progress_6', selectedQuizModule === 6 ? '100' : String(module6Progress));
+        
+        await completeModuleOnFirebase(selectedQuizModule);
       }
+      
+      setQuizState('result');
     }
   };
 
-  // Restart quiz
-  const resetQuiz = () => {
-    setQuizState('splash');
-    setCurrentQuestionIndex(0);
-    setSelectedAnswers([]);
-    setQuizScore(0);
-    setShowExplanation(false);
+  const copyPythonCode = () => {
+    const code = MODULE_LECTURES[readingModuleId || 4]?.code || '';
+    navigator.clipboard.writeText(code);
+    setCopiedCode(true);
+    setTimeout(() => setCopiedCode(false), 2000);
   };
 
+  const quizAttemptsCount = quizHistory.length;
+
   return (
-    <div className="min-h-screen bg-[#051424] text-[#d4e4fa] flex flex-col font-sans selection:bg-[#00f0ff]/20">
+    <div className="min-h-screen bg-[#051424] text-white flex flex-col font-sans" id="vwa_classroom_body">
       
-      {/* HEADER NAV COMPONENT */}
-      <header className="sticky top-0 z-50 bg-[#051424]/95 border-b border-[#1c2b3c] backdrop-blur-md px-6 py-4" id="vwa_header">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+      {/* GLOBAL BANNER HEADER COMPONENT */}
+      <header className="bg-[#051424] border-b border-[#1c2b3c] sticky top-0 z-50 px-4 md:px-6 py-3 shrink-0" id="vwa_global_header">
+        <div className="max-w-7xl mx-auto flex items-center justify-between" id="header_wrap">
           
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => { setActiveTab('dashboard'); setReadingModuleId(null); }} id="nav-logo-wrap">
-            <div className="w-10 h-10 select-none flex items-center justify-center shrink-0" id="nav-logo-box">
-              {!logoError ? (
-                <img 
-                  src="/vwa_logo.png" 
-                  alt="Học viện An toàn VWA" 
-                  className="w-10 h-10 rounded-lg object-cover border border-[#00dbe9]/30 shadow-[0_0_15px_rgba(0,219,233,0.3)] bg-white"
-                  onError={() => setLogoError(true)} 
-                  referrerPolicy="no-referrer"
-                />
-              ) : (
-                <div className="w-10 h-10 bg-gradient-to-tr from-[#0f52ba] to-[#00dbe9] rounded-lg flex items-center justify-center border border-[#00f0ff]/50 shadow-[0_0_18px_rgba(15,82,186,0.6)] animate-pulse" style={{ animationDuration: '4s' }}>
-                  <Shield className="w-5 h-5 text-white drop-shadow-[0_0_4px_rgba(0,240,255,0.6)]" strokeWidth={2.5} />
-                </div>
-              )}
+          {/* Interactive Logo Brand */}
+          <div 
+            className="flex items-center gap-2.5 cursor-pointer select-none group" 
+            onClick={() => { setActiveTab('dashboard'); setReadingModuleId(null); }}
+            id="logo_brand_anchor"
+          >
+            <div className="w-10 h-10 rounded-lg overflow-hidden flex items-center justify-center bg-white shadow-[0_0_15px_rgba(0,186,198,0.2)] group-hover:scale-105 transition-all duration-300">
+              <img src="/vwa_logo.png" alt="VWA Logo" className="w-full h-full object-cover" />
             </div>
             <div>
-              <h1 className="text-base font-bold tracking-tight text-white flex items-center gap-1 leading-tight uppercase" id="nav-logo-text">
-                HỌC VIỆN AN TOÀN <span className="text-[#00f0ff]">VWA</span>
+              <h1 className="text-sm font-black text-white hover:text-[#00f0ff] uppercase tracking-wider flex items-center gap-1.5 transition-all">
+                HỌC VIỆN AN TOÀN VWA
               </h1>
-              <span className="text-[9px] text-[#849495] tracking-widest uppercase block">Hệ thống Trợ lý AI</span>
+              <span className="text-[10px] text-[#4edea3] font-mono leading-none tracking-tight block">AN NINH MẠNG TOÀN DIỆN</span>
             </div>
           </div>
 
-          {/* Desktop Nav Items */}
-          <nav className="hidden md:flex items-center gap-1" id="nav-links-desktop">
+          {/* Interactive Navigation links */}
+          <nav className="hidden md:flex items-center gap-1 bg-[#0b1622] p-1.5 rounded-lg border border-[#1c2b3c]" id="desktop_tabs">
             <button 
               onClick={() => { setActiveTab('dashboard'); setReadingModuleId(null); }}
               className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${activeTab === 'dashboard' ? 'text-[#00f0ff] bg-[#122131] border-b-2 border-[#00f0ff] rounded-b-none' : 'text-[#b9cacb] hover:text-white hover:bg-[#122131]/50'}`}
@@ -1251,199 +2105,170 @@ print(f"Dữ liệu đã mã hóa: {ciphertext.hex()[:50]}...")`;
       <main className="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6" id="vwa_main_viewport">
 
         {/* 1. HOME/DASHBOARD VIEW */}
-        {activeTab === 'dashboard' && readingModuleId === null && (
-          <div className="space-y-8 animate-fade-in" id="dashboard_view">
-            
-            {/* Hero Interactive Header */}
-            <section className="relative overflow-hidden bg-gradient-to-br from-[#0d1c2d] to-[#051424] border border-[#1c2b3c] rounded-xl p-8 shadow-[0_10px_30px_rgba(1,15,31,0.5)]" id="dashboard_hero">
-              <div className="absolute top-0 right-0 w-96 h-96 bg-[#00f0ff]/5 rounded-full filter blur-3xl pointer-events-none" />
-              <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#10b981]/5 rounded-full filter blur-3xl pointer-events-none" />
+        {activeTab === 'dashboard' && readingModuleId === null && (() => {
+          const dashboardModules = [
+            {
+              id: 1,
+              title: "Mô-đun 1: Nhập môn Mã hóa & Mật mã đối xứng",
+              desc: "Học phần cơ bản về mật mã đối xứng, mã dòng và mã giải bằng thuật toán AES tại VWA.",
+              difficulty: "Dễ",
+              difficultyClass: "text-[#4edea3] bg-[#003824]",
+              progress: module1Progress,
+              completedCount: globalStats.module1CompletedCount,
+            },
+            {
+              id: 2,
+              title: "Mô-đun 2: Bảo mật Web (OWASP Top 10)",
+              desc: "Nghiên cứu tấn công SQL Injection và phòng ngừa lỗ hổng ứng dụng web.",
+              difficulty: "Trung bình",
+              difficultyClass: "text-[#fed639] bg-[#3b2f00]",
+              progress: module2Progress,
+              completedCount: globalStats.module2CompletedCount,
+            },
+            {
+              id: 4,
+              title: "Mô-đun 4: Mật mã học nâng cao & RSA",
+              desc: "Học thuyết mật mã học bất đối xứng hiện đại, hệ mã khóa công khai RSA.",
+              difficulty: "Khó",
+              difficultyClass: "text-[#ffb4ab] bg-[#690005]/40",
+              progress: module4Progress,
+              completedCount: globalStats.module4CompletedCount,
+            }
+          ];
+
+          return (
+            <div className="space-y-8 animate-fade-in" id="dashboard_view">
               
-              <div className="max-w-2xl relative z-10 space-y-4">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#00363a] text-[#00f0ff] text-xs font-semibold uppercase tracking-wider rounded-full">
-                  <Sparkles className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: '6s' }} />
-                  Trợ lý học thuật thế hệ mới
-                </span>
-                <h2 className="text-2xl md:text-4xl font-extrabold text-white tracking-tight leading-tight">
-                  Làm chủ nền tảng An toàn thông tin với sự trợ giúp của AI
-                </h2>
-                <p className="text-sm md:text-base text-[#b9cacb] leading-relaxed">
-                  Khám phá lộ trình học tập được cá nhân hóa, từ mật mã học cơ bản đến kiểm thử xâm nhập & phân tích mã độc tiên tiến. Trợ lý AI Assistant luôn trực chiến hỗ trợ bạn giải thuật 24/7.
-                </p>
-
-                {/* Instant search input */}
-                <form onSubmit={handleAIPromptSplit} className="mt-6 flex flex-col sm:flex-row gap-2" id="hero_search_ai">
-                  <div className="relative flex-1">
-                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-[#849495]" />
-                    <input 
-                      type="text" 
-                      value={searchPrompt}
-                      onChange={(e) => setSearchPrompt(e.target.value)}
-                      placeholder="Hỏi AI bất kỳ điều gì (VD: Thuật toán mã hóa RSA hoạt động ra sao?)"
-                      className="w-full pl-11 pr-4 py-3 bg-[#051424] border border-[#273647] rounded-md focus:outline-none focus:border-[#00f0ff] focus:ring-1 focus:ring-[#00f0ff] text-white placeholder-[#849495] text-sm font-medium transition-all"
-                    />
-                  </div>
-                  <button 
-                    type="submit"
-                    className="px-6 py-3 bg-[#00f0ff] hover:bg-[#7df4ff] text-[#051424] font-bold text-sm rounded-md transition-all duration-200 shadow-[0_0_15px_rgba(0,240,255,0.3)] flex items-center justify-center gap-2"
-                  >
-                    Tạo giải thích
-                  </button>
-                </form>
-              </div>
-            </section>
-
-
-
-            {/* Modules Grid - Active / Registered courses */}
-            <section className="space-y-4" id="dashboard_active_courses">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                  <Terminal className="w-5 h-5 text-[#00f0ff]" />
-                  Mô-đun học tập của bạn
-                </h3>
-                <button onClick={() => setActiveTab('modules')} className="text-xs font-bold text-[#00f0ff] hover:underline flex items-center gap-1">
-                  Xem tất cả
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6" id="active-modules-grid">
+              {/* Hero Interactive Header */}
+              <section className="relative overflow-hidden bg-gradient-to-br from-[#0d1c2d] to-[#051424] border border-[#1c2b3c] rounded-xl p-8 shadow-[0_10px_30px_rgba(1,15,31,0.5)]" id="dashboard_hero">
+                <div className="absolute top-0 right-0 w-96 h-96 bg-[#00f0ff]/5 rounded-full filter blur-3xl pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#10b981]/5 rounded-full filter blur-3xl pointer-events-none" />
                 
-                {/* Module 1 */}
-                <div className="bg-[#0d1c2d] border border-[#1c2b3c] rounded-lg overflow-hidden flex flex-col justify-between group hover:border-[#00f0ff]/40 transition-all duration-300">
-                  <div className="p-5 space-y-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] text-[#4edea3] bg-[#003824] px-2 py-0.5 rounded font-mono">Dễ</span>
-                      <span className="text-xs text-[#849495]">{globalStats.module1CompletedCount} học viên hoàn thành</span>
+                <div className="max-w-2xl relative z-10 space-y-4">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#00363a] text-[#00f0ff] text-xs font-semibold uppercase tracking-wider rounded-full">
+                    <Sparkles className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: '6s' }} />
+                    Trợ lý học thuật thế hệ mới
+                  </span>
+                  <h2 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight leading-tight">
+                    Làm chủ nền tảng An toàn thông tin với sự trợ giúp của AI
+                  </h2>
+                  <p className="text-sm text-[#b9cacb] leading-relaxed">
+                    Khám phá lộ trình học tập được cá nhân hóa, từ mật mã học cơ bản đến kiểm thử xâm nhập & phân tích mã độc tiên tiến. Trợ lý AI Assistant luôn trực chiến hỗ trợ bạn giải thuật 24/7.
+                  </p>
+
+                  {/* Instant search input */}
+                  <form onSubmit={handleAIPromptSplit} className="mt-6 flex flex-col sm:flex-row gap-2" id="hero_search_ai">
+                    <div className="relative flex-1">
+                      <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-[#849495]" />
+                      <input 
+                        type="text" 
+                        value={searchPrompt}
+                        onChange={(e) => setSearchPrompt(e.target.value)}
+                        placeholder="Hỏi AI bất kỳ điều gì (VD: Thuật toán mã hóa RSA hoạt động ra sao?)"
+                        className="w-full pl-11 pr-4 py-3 bg-[#051424] border border-[#273647] rounded-md focus:outline-none focus:border-[#00f0ff] focus:ring-1 focus:ring-[#00f0ff] text-white placeholder-[#849495] text-sm font-medium transition-all"
+                      />
                     </div>
-                    <div>
-                      <h4 className="text-base font-bold text-white group-hover:text-[#00f0ff] transition-all">Mô-đun 1: Nhập môn Mã hóa</h4>
-                      <p className="text-xs text-[#849495] mt-1">Học phần cơ bản về mật mã đối xứng, mã dòng và mã giải bằng thuật toán AES.</p>
-                    </div>
-                    <div className="space-y-1">
-                      <div className="flex justify-between text-xs font-mono text-[#849495]">
-                        <span>Tiến độ học tập</span>
-                        <span className="text-[#00dbe9]">75%</span>
-                      </div>
-                      <div className="w-full h-1.5 bg-[#051424] rounded-full overflow-hidden">
-                        <div className="h-full bg-gradient-to-r from-[#00dbe9] to-[#00f0ff] rounded-full" style={{ width: '75%' }} />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="border-t border-[#1c2b3c] p-4 bg-[#051424]/40 flex gap-2">
                     <button 
-                      onClick={() => { setActiveTab('chat'); handleSendMessage("Hãy cho tôi phần hướng dẫn học Mô-đun 1: Nhập môn mã hóa!"); }}
-                      className="flex-1 py-2 bg-transparent hover:bg-[#122131] border border-[#273647] hover:border-[#00f0ff]/50 rounded text-center text-xs text-[#b9cacb] hover:text-white transition-all font-semibold"
+                      type="submit"
+                      className="px-6 py-3 bg-[#00f0ff] hover:bg-[#7df4ff] text-[#051424] font-bold text-sm rounded-md transition-all duration-200 shadow-[0_0_15px_rgba(0,240,255,0.3)] flex items-center justify-center gap-2"
                     >
-                      Học với AI
+                      Hỏi AI
                     </button>
-                  </div>
+                  </form>
+                </div>
+              </section>
+
+              {/* Modules Grid - Active / Registered courses */}
+              <section className="space-y-4" id="dashboard_active_courses">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-base font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                    <Terminal className="w-5 h-5 text-[#00f0ff]" />
+                    Mô-đun học tập của bạn
+                  </h3>
+                  <button onClick={() => setActiveTab('modules')} className="text-xs font-bold text-[#00f0ff] hover:underline flex items-center gap-1">
+                    Xem tất cả
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
                 </div>
 
-                {/* Module 2 */}
-                <div className="bg-[#0d1c2d] border border-[#1c2b3c] rounded-lg overflow-hidden flex flex-col justify-between group hover:border-[#00f0ff]/40 transition-all duration-300">
-                  <div className="p-5 space-y-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] text-[#fed639] bg-[#3b2f00] px-2 py-0.5 rounded font-mono">Trung bình</span>
-                      <span className="text-xs text-[#849495]">{globalStats.module2CompletedCount} học viên hoàn thành</span>
-                    </div>
-                    <div>
-                      <h4 className="text-base font-bold text-white group-hover:text-[#00f0ff] transition-all">Mô-đun 2: Bảo mật mạng & Tường lửa</h4>
-                      <p className="text-xs text-[#849495] mt-1">Nghiên cứu kiến trúc IDS, IPS và thiết lập hệ thống tường lửa doanh nghiệp.</p>
-                    </div>
-                    <div className="space-y-1">
-                      <div className="flex justify-between text-xs font-mono text-[#849495]">
-                        <span>Tiến độ học tập</span>
-                        <span className="text-[#00dbe9]">30%</span>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6" id="active-modules-grid">
+                  {dashboardModules.map((course) => (
+                    <div key={course.id} className="bg-[#0d1c2d] border border-[#1c2b3c] rounded-lg overflow-hidden flex flex-col justify-between group hover:border-[#00f0ff]/40 transition-all duration-300">
+                      <div className="p-5 space-y-4">
+                        <div className="flex items-center justify-between">
+                          <span className={`text-[10px] px-2 py-0.5 rounded font-mono ${course.difficultyClass}`}>{course.difficulty}</span>
+                          <span className="text-xs text-[#849495]">{course.completedCount} đã hoàn thành</span>
+                        </div>
+                        <div>
+                          <h4 className="text-base font-bold text-white group-hover:text-[#00f0ff] transition-all">{course.title}</h4>
+                          <p className="text-xs text-[#849495] mt-1">{course.desc}</p>
+                        </div>
+                        <div className="space-y-1">
+                          <div className="flex justify-between text-xs font-mono text-[#849495]">
+                            <span>Tiến độ học tập</span>
+                            <span className="text-[#00dbe9]">{course.progress}%</span>
+                          </div>
+                          <div className="w-full h-1.5 bg-[#051424] rounded-full overflow-hidden">
+                            <div className="h-full bg-gradient-to-r from-[#00dbe9] to-[#00f0ff] rounded-full" style={{ width: `${course.progress}%` }} />
+                          </div>
+                        </div>
                       </div>
-                      <div className="w-full h-1.5 bg-[#051424] rounded-full overflow-hidden">
-                        <div className="h-full bg-[#10b981] rounded-full" style={{ width: '30%' }} />
+                      <div className="border-t border-[#1c2b3c] p-4 bg-[#051424]/40 flex gap-2">
+                        <button 
+                          onClick={() => {
+                            setActiveTab('modules');
+                            setReadingModuleId(course.id);
+                            setSelectedQuizModule(course.id);
+                            setQuizState('splash');
+                          }}
+                          className="flex-1 py-1.5 bg-transparent hover:bg-[#122131] border border-[#273647] hover:border-[#00f0ff]/50 rounded text-center text-xs text-[#b9cacb] hover:text-white transition-all font-semibold"
+                        >
+                          Học bài lý thuyết
+                        </button>
                       </div>
                     </div>
-                  </div>
-                  <div className="border-t border-[#1c2b3c] p-4 bg-[#051424]/40 flex gap-2">
-                    <button 
-                      onClick={() => { setActiveTab('chat'); handleSendMessage("Tôi muốn mở bài Lab thực hành Mô-đun 2!"); }}
-                      className="flex-1 py-2 bg-transparent hover:bg-[#122131] border border-[#273647] hover:border-[#00f0ff]/50 rounded text-center text-xs text-[#b9cacb] hover:text-white transition-all font-semibold"
-                    >
-                      Học với AI
-                    </button>
-                  </div>
+                  ))}
                 </div>
+              </section>
 
-                {/* Module 3 */}
-                <div className="bg-[#0d1c2d] border border-[#1c2b3c] rounded-lg overflow-hidden flex flex-col justify-between group hover:border-[#00f0ff]/40 transition-all duration-300">
-                  <div className="p-5 space-y-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] text-[#ffb4ab] bg-[#690005]/40 px-2 py-0.5 rounded font-mono">Khó</span>
-                      <span className="text-xs text-[#849495]">{globalStats.module3CompletedCount} học viên hoàn thành</span>
-                    </div>
-                    <div>
-                      <h4 className="text-base font-bold text-white group-hover:text-[#00f0ff] transition-all">Mô-đun 3: AI trong Phát hiện mã độc</h4>
-                      <p className="text-xs text-[#849495] mt-1">Sử dụng Machine Learning mô hình hóa hành vi mã độc Ransomware dính mã.</p>
-                    </div>
-                    <div className="space-y-1">
-                      <div className="flex justify-between text-xs font-mono text-[#849495]">
-                        <span>Tiến độ học tập</span>
-                        <span className="text-[#00dbe9]">12%</span>
-                      </div>
-                      <div className="w-full h-1.5 bg-[#051424] rounded-full overflow-hidden">
-                        <div className="h-full bg-[#ffb4ab] rounded-full" style={{ width: '12%' }} />
-                      </div>
-                    </div>
+              {/* Special AI Path Banner Option */}
+              <section className="bg-gradient-to-r from-[#00363a] to-[#010f1f] border border-[#00f0ff]/30 rounded-lg p-6 flex flex-col md:flex-row items-center justify-between gap-6" id="ai_path_banner_wrap">
+                <div className="space-y-2">
+                  <span className="text-[10px] text-[#051424] bg-[#00f0ff] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">Mới cập nhật</span>
+                  <h4 className="text-lg font-bold text-white leading-tight">Lộ trình Chuyên gia AI Security (University Syllabus)</h4>
+                  <p className="text-sm text-[#b9cacb]">Tìm hiểu cách ứng dụng AI hỗ trợ phòng thủ trước tấn công Prompt Injection, bẻ khóa mô hình lớn LLM.</p>
+                </div>
+                <button 
+                  onClick={() => { setActiveTab('chat'); handleSendMessage("Hướng dẫn tôi lộ trình Chuyên gia AI Security cụ thể với!"); }}
+                  className="whitespace-nowrap px-5 py-2.5 bg-[#00f0ff] hover:bg-[#7df4ff] text-[#051424] font-bold text-xs uppercase tracking-wider rounded transition-all duration-200"
+                >
+                  Khám phá lộ trình chuyên gia
+                </button>
+              </section>
+
+              {/* Lịch sử ôn tập & đánh giá cá nhân */}
+              <section className="bg-[#0d1c2d] border border-[#1c2b3c] rounded-xl p-6 space-y-4" id="personal_quiz_history_card">
+                <div className="flex items-center justify-between border-b border-[#1c2b3c] pb-3" id="history_card_header">
+                  <div className="flex items-center gap-2">
+                    <History className="w-5 h-5 text-[#fed639]" />
+                    <h4 className="text-base font-bold text-white uppercase tracking-wider font-sans">Lịch sử Ôn tập & Bài thi</h4>
                   </div>
-                  <div className="border-t border-[#1c2b3c] p-4 bg-[#051424]/40 flex gap-2">
-                    <button 
-                      onClick={() => { setActiveTab('chat'); handleSendMessage("Bắt đầu bài tóm tắt lý thuyết của Mô-đun 3!"); }}
-                      className="flex-1 py-2 bg-[#00f0ff] hover:bg-[#7df4ff] text-[#051424] rounded text-center text-xs transition-all font-bold"
-                    >
-                      Tiếp tục học
-                    </button>
+                  <div className="flex items-center gap-2 text-xs text-[#849495] font-mono" id="history_attempts_stat">
+                    <span>Số lần thử lại:</span>
+                    <span className="px-2 py-0.5 bg-[#00f0ff]/10 text-[#00f0ff] border border-[#00f0ff]/20 rounded font-bold">{quizAttemptsCount}</span>
                   </div>
                 </div>
 
-              </div>
-            </section>
-
-            {/* Special AI Path Banner Option */}
-            <section className="bg-gradient-to-r from-[#00363a] to-[#010f1f] border border-[#00f0ff]/30 rounded-lg p-6 flex flex-col md:flex-row items-center justify-between gap-6" id="ai_path_banner_wrap">
-              <div className="space-y-2">
-                <span className="text-[10px] text-[#051424] bg-[#00f0ff] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">Mới cập nhật</span>
-                <h4 className="text-xl font-bold text-white leading-tight">Lộ trình Chuyên gia AI Security (University Syllabus)</h4>
-                <p className="text-sm text-[#b9cacb]">Tìm hiểu cách ứng dụng AI hỗ trợ phòng thủ trước tấn công Prompt Injection, bẻ khóa mô hình lớn LLM.</p>
-              </div>
-              <button 
-                onClick={() => { setActiveTab('chat'); handleSendMessage("Hướng dẫn tôi lộ trình Chuyên gia AI Security cụ thể với!"); }}
-                className="whitespace-nowrap px-6 py-3 bg-[#00f0ff] hover:bg-[#7df4ff] text-[#051424] font-bold text-xs uppercase tracking-wider rounded transition-all duration-200"
-              >
-                Khám phá lộ trình chuyên gia
-              </button>
-            </section>
-
-            {/* Lịch sử ôn tập & đánh giá cá nhân */}
-            <section className="bg-[#0d1c2d] border border-[#1c2b3c] rounded-xl p-6 space-y-4" id="personal_quiz_history_card">
-              <div className="flex items-center justify-between border-b border-[#1c2b3c] pb-3" id="history_card_header">
-                <div className="flex items-center gap-2">
-                  <History className="w-5 h-5 text-[#fed639]" />
-                  <h4 className="text-base font-bold text-white uppercase tracking-wider">Lịch sử Ôn tập & Bài thi</h4>
-                </div>
-                <div className="flex items-center gap-2 text-xs text-[#849495] font-mono" id="history_attempts_stat">
-                  <span>Số lần thử lại:</span>
-                  <span className="px-2 py-0.5 bg-[#00f0ff]/10 text-[#00f0ff] border border-[#00f0ff]/20 rounded font-bold">{quizAttemptsCount}</span>
-                </div>
-              </div>
-
-              {quizHistory.length === 0 ? (
-                <div className="text-center py-6 text-xs text-[#849495]" id="history_empty_state">
-                  Bạn chưa thực hiện lượt kiểm tra đánh giá nào. Kết quả chi tiết và các câu hỏi sai sẽ được lưu giữ tại đây sau mỗi lượt làm bài.
-                </div>
-              ) : (
-                <div className="space-y-4 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar" id="history_list_container">
-                  {quizHistory.map((attempt, index) => {
-                    const isPassed = attempt.score >= 48;
-                    return (
-                      <div key={index} className="p-4 bg-[#051424]/60 border border-[#273647]/50 hover:border-[#1c2b3c] rounded-lg space-y-3 transition-all" id={`attempt_row_${index}`}>
+                {quizHistory.length === 0 ? (
+                  <div className="text-center py-6 text-xs text-[#849495]" id="history_empty_state">
+                    Bạn chưa thực hiện lượt kiểm tra đánh giá nào. Kết quả chi tiết và các câu hỏi sai sẽ được lưu giữ tại đây sau mỗi lượt làm bài.
+                  </div>
+                ) : (
+                  <div className="space-y-4 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar" id="history_list_container">
+                    {quizHistory.map((attempt, index) => {
+                      const isPassed = attempt.score >= 32; // Over 80% of 40 questions is 32 marks
+                      return (
+                        <div key={index} className="p-4 bg-[#051424]/60 border border-[#273647]/50 hover:border-[#1c2b3c] rounded-lg p-4 space-y-3 transition-all" id={`attempt_row_${index}`}>
                         <div className="flex items-center justify-between flex-wrap gap-2" id={`attempt_meta_${index}`}>
                           <div className="flex items-center gap-2" id={`attempt_status_wrap_${index}`}>
                             <span className={`px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase tracking-wider ${
@@ -1466,7 +2291,7 @@ print(f"Dữ liệu đã mã hóa: {ciphertext.hex()[:50]}...")`;
                               Xem danh sách câu sai ({attempt.incorrectQuestions.length})
                             </summary>
                             <div className="mt-2.5 pl-3 border-l-2 border-[#ffb4ab]/30 space-y-3 pt-1" id={`incorrect_questions_list_${index}`}>
-                              {attempt.incorrectQuestions.map((iq, qIdx) => (
+                              {attempt.incorrectQuestions.map((iq: any, qIdx: number) => (
                                 <div key={qIdx} className="space-y-1.5 text-xs" id={`iq_${index}_${qIdx}`}>
                                   <p className="font-semibold text-white/95">
                                     Q: {iq.questionText}
@@ -1499,7 +2324,8 @@ print(f"Dữ liệu đã mã hóa: {ciphertext.hex()[:50]}...")`;
             </section>
 
           </div>
-        )}
+          );
+        })()}
 
         {/* 2. COURSE CATALOG LAYOUT & DETAILED READING TAB */}
         {activeTab === 'modules' && (
@@ -1513,218 +2339,102 @@ print(f"Dữ liệu đã mã hóa: {ciphertext.hex()[:50]}...")`;
                   <p className="text-sm text-[#b9cacb] mt-1">Khám phá lộ trình từ cơ bản tới nâng cao. Học tập vững vàng lý thuyết bảo mật tích hợp câu hỏi kiểm tra có thật để nhận chứng chỉ.</p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6" id="catalogs-grid">
-                  
-                  {/* Card 1 */}
-                  <div className="bg-[#0d1c2d] border border-[#1c2b3c] rounded-xl p-6 hover:border-[#00f0ff]/30 transition-all flex flex-col justify-between group">
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <span className="w-10 h-10 rounded bg-[#2c3a4c] flex items-center justify-center">
-                          <Shield className="w-5 h-5 text-[#00f0ff]" />
-                        </span>
-                        <div className="flex gap-2">
-                          <span className="text-[10px] text-[#4edea3] bg-[#003824] px-2 py-0.5 rounded font-mono">Dễ</span>
-                          <span className="text-xs text-[#849495] font-mono">12 Bài học • 8 Giờ</span>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="catalogs-grid">
+                  {modulesConfig.map((module) => (
+                    <div key={module.id} className="bg-[#0d1c2d] border border-[#1c2b3c] rounded-xl p-6 hover:border-[#00f0ff]/30 transition-all flex flex-col justify-between group">
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <span className="w-10 h-10 rounded bg-[#2c3a4c] flex items-center justify-center">
+                            {module.icon}
+                          </span>
+                          <div className="flex gap-2">
+                            <span className={`text-[10px] px-2 py-0.5 rounded font-mono ${module.difficultyClass}`}>{module.difficulty}</span>
+                            <span className="text-xs text-[#849495] font-mono">{module.timing}</span>
+                          </div>
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-bold text-white group-hover:text-[#00f0ff] transition-all">{module.title}</h3>
+                          <p className="text-sm text-[#b9cacb] mt-2 leading-relaxed min-h-[60px] line-clamp-3">{module.desc}</p>
+                        </div>
+                        <div className="flex items-center gap-1.5 text-xs text-[#4edea3] font-mono bg-[#003824]/30 px-3 py-1.5 rounded w-fit">
+                          <CheckCircle className="w-4 h-4" />
+                          Tiến độ: {module.progress}%
                         </div>
                       </div>
-                      <div>
-                        <h3 className="text-lg font-bold text-white group-hover:text-[#00f0ff] transition-all">Mật mã học (Cryptography)</h3>
-                        <p className="text-sm text-[#b9cacb] mt-2">Tìm hiểu sâu về nền tảng mật mã, các hệ mã bất đối xứng cổ điển và đương đại, trực tiếp thử nghiệm giải thuật RSA và đường cong elliptic.</p>
-                      </div>
-                      <div className="flex items-center gap-1.5 text-xs text-[#4edea3] font-mono bg-[#003824]/30 px-3 py-1.5 rounded w-fit">
-                        <CheckCircle className="w-4 h-4" />
-                        Tiến độ: {module4Progress}% (Thời gian thực)
-                      </div>
-                    </div>
-                    <div className="border-t border-[#1c2b3c] mt-6 pt-4 flex items-center justify-between">
-                      <span className="text-xs text-[#849495]">Học viên đã hoàn thành trên hệ thống: <strong className="text-white font-mono">{globalStats.module4CompletedCount}</strong></span>
-                      <button 
-                        onClick={() => setReadingModuleId(4)}
-                        className="px-4 py-2 bg-[#00f0ff] hover:bg-[#7df4ff] text-[#051424] text-xs font-bold rounded flex items-center gap-1 transition-all"
-                      >
-                        Học ngay
-                        <ChevronRight className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Card 2 */}
-                  <div className="bg-[#0d1c2d] border border-[#1c2b3c] rounded-xl p-6 hover:border-[#00f0ff]/30 transition-all flex flex-col justify-between group">
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <span className="w-10 h-10 rounded bg-[#2c3a4c] flex items-center justify-center">
-                          <Code className="w-5 h-5 text-[#4edea3]" />
-                        </span>
-                        <div className="flex gap-2">
-                          <span className="text-[10px] text-[#fed639] bg-[#3b2f00] px-2 py-0.5 rounded font-mono">Trung bình</span>
-                          <span className="text-xs text-[#849495] font-mono">18 Bài học • 15 Giờ</span>
-                        </div>
-                      </div>
-                      <div>
-                        <h3 className="text-lg font-bold text-white group-hover:text-[#00f0ff] transition-all">Bảo mật Web (OWASP Top 10)</h3>
-                        <p className="text-sm text-[#b9cacb] mt-2">Tấn công và phòng thủ mạng với các lỗi hổng cực kỳ phổ biến ngày nay như SQL Injection, XSS, CSRF, cấu hình sai hệ thống.</p>
+                      <div className="border-t border-[#1c2b3c] mt-6 pt-4 flex items-center justify-between gap-1">
+                        <span className="text-[11px] text-[#849495] leading-normal">Học viên đã hoàn thành: <strong className="text-white font-mono">{module.completedCount}</strong></span>
+                        <button 
+                          onClick={() => {
+                            setSelectedQuizModule(module.id);
+                            setReadingModuleId(module.id);
+                            setQuizState('splash');
+                          }}
+                          className="px-3.5 py-2 bg-[#00f0ff] hover:bg-[#7df4ff] text-[#051424] text-xs font-bold rounded flex items-center gap-1 transition-all whitespace-nowrap"
+                        >
+                          Học ngay
+                          <ChevronRight className="w-3.5 h-3.5" />
+                        </button>
                       </div>
                     </div>
-                    <div className="border-t border-[#1c2b3c] mt-6 pt-4 flex items-center justify-between">
-                      <span className="text-xs text-[#849495]">Học viên đã hoàn thành trên hệ thống: <strong className="text-white font-mono">{globalStats.module2CompletedCount}</strong></span>
-                      <button 
-                        onClick={() => { setActiveTab('chat'); handleSendMessage("Tôi muốn xem lý thuyết bài học Bảo mật ứng dụng Web!"); }}
-                        className="px-4 py-2 bg-transparent border border-[#273647] hover:border-[#00f0ff]/50 text-white text-xs font-bold rounded flex items-center gap-1 transition-all"
-                      >
-                        Yêu cầu AI mở
-                        <ChevronRight className="w-4 h-4 z-10" />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Card 3 */}
-                  <div className="bg-[#0d1c2d] border border-[#1c2b3c] rounded-xl p-6 hover:border-[#00f0ff]/30 transition-all flex flex-col justify-between group">
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <span className="w-10 h-10 rounded bg-[#2c3a4c] flex items-center justify-center">
-                          <Shield className="w-5 h-5 text-[#fed639]" />
-                        </span>
-                        <div className="flex gap-2">
-                          <span className="text-[10px] text-[#fed639] bg-[#3b2f00] px-2 py-0.5 rounded font-mono">Trung bình</span>
-                          <span className="text-xs text-[#849495] font-mono">24 Bài học • 20 Giờ</span>
-                        </div>
-                      </div>
-                      <div>
-                        <h3 className="text-lg font-bold text-white group-hover:text-[#00f0ff] transition-all">An ninh hạ tầng mạng</h3>
-                        <p className="text-sm text-[#b9cacb] mt-2">Quản lý mạng phức tạp, triển khai hệ thống ngăn ngừa xâm nhập (IDS/IPS), tường lửa phân tách lớp vật lý và ảo ứng dụng đám mây.</p>
-                      </div>
-                    </div>
-                    <div className="border-t border-[#1c2b3c] mt-6 pt-4 flex items-center justify-between">
-                      <span className="text-xs text-[#849495]">Học viên đã hoàn thành trên hệ thống: <strong className="text-white font-mono">{globalStats.module3CompletedCount}</strong></span>
-                      <button 
-                        onClick={() => { setActiveTab('chat'); handleSendMessage("Hãy cho tôi tài liệu ôn thi môn Mạng Máy Tính Bảo Mật!"); }}
-                        className="px-4 py-2 bg-transparent border border-[#273647] hover:border-[#00f0ff]/50 text-white text-xs font-bold rounded flex items-center gap-1 transition-all"
-                      >
-                        Yêu cầu AI mở
-                        <ChevronRight className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Card 4 */}
-                  <div className="bg-[#0d1c2d] border border-[#1c2b3c] rounded-xl p-6 hover:border-[#00f0ff]/30 transition-all flex flex-col justify-between group">
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <span className="w-10 h-10 rounded bg-[#2c3a4c] flex items-center justify-center">
-                          <Terminal className="w-5 h-5 text-[#ffb4ab]" />
-                        </span>
-                        <div className="flex gap-2">
-                          <span className="text-[10px] text-[#ffb4ab] bg-[#690005]/40 px-2 py-0.5 rounded font-mono">Khó</span>
-                          <span className="text-xs text-[#849495] font-mono">15 Bài học • 25 Giờ</span>
-                        </div>
-                      </div>
-                      <div>
-                        <h3 className="text-lg font-bold text-white group-hover:text-[#00f0ff] transition-all">Phân tích mã độc (Malware Analysis)</h3>
-                        <p className="text-sm text-[#b9cacb] mt-2">Kỹ thuật dịch ngược mã nguồn (Reverse Engineering), phân tích hành vi virus trong môi trường hộp cát biệt lập an toàn (Sandbox).</p>
-                      </div>
-                    </div>
-                    <div className="border-t border-[#1c2b3c] mt-6 pt-4 flex items-center justify-between">
-                      <span className="text-xs text-[#849495]">Học viên đã hoàn thành trên hệ thống: <strong className="text-white font-mono">{globalStats.module4CompletedCount}</strong></span>
-                      <button 
-                        onClick={() => { setActiveTab('chat'); handleSendMessage("Chỉ cho tôi cách phân tích một file .exe nghi vấn!"); }}
-                        className="px-4 py-2 bg-transparent border border-[#273647] hover:border-[#00f0ff]/50 text-white text-xs font-bold rounded flex items-center gap-1 transition-all"
-                      >
-                        Yêu cầu AI mở
-                        <ChevronRight className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-
+                  ))}
                 </div>
               </div>
             ) : (
-              
-              /* 2B. SPLIT SCREEN READING DETAILED VIEW (Left: Content & Quiz Engine, Right: Side AI Chat Helper) */
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[calc(100vh-160px)]" id="split_screen_reading_view">
-                
-                {/* LEFT CONTENT COLUMN (Lessons & Code & Quiz) */}
-                <div className="lg:col-span-7 space-y-6 overflow-y-auto pr-0 lg:pr-2" style={{ maxHeight: 'calc(100vh - 120px)' }} id="left_reading_column">
-                  
-                  {/* Navigation back */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6" id="reading_view">
+                <div className="lg:col-span-7 space-y-6">
+                <div>
                   <button 
                     onClick={() => setReadingModuleId(null)}
-                    className="flex items-center gap-2 text-xs font-bold text-[#00f0ff] hover:underline"
+                    className="mb-4 text-xs font-bold text-[#00f0ff] hover:underline flex items-center gap-1 text-left"
                     id="btn_back_to_catalog"
                   >
-                    <span>← Quay lại danh sách Mô-đun</span>
+                    <ChevronLeft className="w-4 h-4" /> Quay lại thư viện
                   </button>
-
-                  <div className="space-y-2">
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-[#00363a] text-[#00f0ff] text-[10px] font-mono rounded uppercase tracking-wider">
-                      <Shield className="w-3.5 h-3.5" />
-                      Mô-đun 04: Mật mã học (Cryptography)
-                    </span>
-                    <h2 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Thuật toán Mã hóa RSA</h2>
-                    <p className="text-xs text-[#849495]">Số học viên toàn cầu hoàn thành mô-đun này qua Firebase: <strong className="font-mono text-white text-xs">{globalStats.module4CompletedCount}</strong></p>
+                  <h2 className="text-2xl font-extrabold text-[#fff] tracking-tight">{MODULE_LECTURES[readingModuleId || 4]?.title}</h2>
+                    <p className="text-xs text-[#849495]">Số học viên toàn cầu hoàn thành mô-đun này qua Firebase: <strong className="font-mono text-white text-xs">
+                      {readingModuleId === 1 && globalStats.module1CompletedCount}
+                      {readingModuleId === 2 && globalStats.module2CompletedCount}
+                      {readingModuleId === 3 && globalStats.module3CompletedCount}
+                      {readingModuleId === 4 && globalStats.module4CompletedCount}
+                      {readingModuleId === 5 && globalStats.module5CompletedCount}
+                      {readingModuleId === 6 && globalStats.module6CompletedCount}
+                      {!readingModuleId && globalStats.module4CompletedCount}
+                    </strong></p>
                   </div>
 
                   {/* Core Lesson text */}
                   <article className="prose prose-invert prose-sm max-w-none text-xs md:text-sm text-[#b9cacb] leading-relaxed space-y-4" id="lesson_html_content">
-                    <p>
-                      <strong>RSA (Rivest–Shamir–Adleman)</strong> là một trong các hệ thống mã hóa công khai (mật mã bất đối xứng) đầu tiên và được sử dụng rộng rãi hàng đầu thế giới ngày nay để truyền dữ liệu an toàn. Nó liên quan chặt chẽ tới độ phức tạp rất lớn của bài toán phân tích thừa số nguyên tố cho tích hai số nguyên gốc lớn.
-                    </p>
-
-                    {/* Math section */}
-                    <div className="bg-[#0d1c2d] border border-[#1c2b3c] p-4 rounded-lg space-y-3" id="math_principle_block">
-                      <h4 className="text-white font-bold text-xs md:text-sm flex items-center gap-2">
-                        <Brain className="w-4 h-4 text-[#00f0ff]" />
-                        Nguyên lý toán học của RSA
-                      </h4>
-                      <p className="text-xs text-[#b9cacb]">
-                        Quy trình thiết lập cặp khóa RSA bao gồm 4 bước đơn giản:
-                      </p>
-                      <ul className="list-disc pl-5 space-y-2 text-xs text-[#b9cacb]">
-                        <li><strong>Tạo khóa (Key generation):</strong> Chọn 2 số nguyên tố siêu lớn bí mật là <code className="text-[#00f0ff] font-mono">p</code> và <code className="text-[#00f0ff] font-mono">q</code>. Tính mô-đun <code className="text-white font-mono">n = p * q</code> và hàm phi Euler <code className="text-white font-mono">φ(n) = (p-1)*(q-1)</code>. Tìm e và d sao cho <code className="text-white font-mono">d * e ≡ 1 (mod φ(n))</code>.</li>
-                        <li><strong>Phân phối khóa (Key distribution):</strong> Khóa công khai gồm đại lượng <code className="font-mono text-[#00f0ff]">(e, n)</code> được chia sẻ rộng rãi. Khóa bí mật <code className="font-mono text-[#ffb4ab]">(d, n)</code> giữ kín tuyệt đối.</li>
-                        <li><strong>Mã hóa (Encryption):</strong> Bản rõ M được chuyển thành bản mã C nhờ công thức: <code className="text-[#4edea3] font-mono block py-1 bg-[#051424] text-center my-1">C ≡ M^e (mod n)</code></li>
-                        <li><strong>Giải mã (Decryption):</strong> Có được bản mã C, chủ quản dùng khóa bí mật d để khôi phục lại M: <code className="text-[#4edea3] font-mono block py-1 bg-[#051424] text-center my-1">M ≡ C^d (mod n)</code></li>
-                      </ul>
-                    </div>
+                    {MODULE_LECTURES[readingModuleId || 4]?.text}
 
                     {/* Code Section */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between" id="code_block_header">
-                        <span className="font-mono text-xs text-[#849495] flex items-center gap-1.5">
-                          <Code className="w-4 h-4 text-[#4edea3]" />
-                          Script minh họa (Python)
-                        </span>
-                        <span className="text-[11px] font-mono text-[#849495] bg-[#122131] px-2 py-0.5 rounded">rsa_demo.py</span>
-                      </div>
+                    {MODULE_LECTURES[readingModuleId || 4]?.code && (
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between" id="code_block_header">
+                          <span className="font-mono text-xs text-[#849495] flex items-center gap-1.5">
+                            <Code className="w-4 h-4 text-[#4edea3]" />
+                            {MODULE_LECTURES[readingModuleId || 4]?.codeTitle || "Script minh họa (Python)"}
+                          </span>
+                          <span className="text-[11px] font-mono text-[#849495] bg-[#122131] px-2 py-0.5 rounded">
+                            {MODULE_LECTURES[readingModuleId || 4]?.codeFilename || "rsa_demo.py"}
+                          </span>
+                        </div>
 
-                      <div className="relative bg-[#051424] border border-[#273647] rounded p-4 font-mono text-xs overflow-x-auto space-y-1 block" id="code_area">
-                        <button 
-                          onClick={copyPythonCode}
-                          className="absolute right-3 top-3 p-1.5 rounded bg-[#122131] hover:bg-[#1c2b3c] text-white transition-all shadow border border-[#273647]"
-                          title="Sao chép mã nguồn"
-                          id="btn_copy_code"
-                        >
-                          {copiedCode ? <Check className="w-3.5 h-3.5 text-[#4edea3]" /> : <Copy className="w-3.5 h-3.5 text-[#00f0ff]" />}
-                        </button>
+                        <div className="relative bg-[#051424] border border-[#273647] rounded p-4 font-mono text-xs overflow-x-auto space-y-1 block" id="code_area">
+                          <button 
+                            onClick={copyPythonCode}
+                            className="absolute right-3 top-3 p-1.5 rounded bg-[#122131] hover:bg-[#1c2b3c] text-white transition-all shadow border border-[#273647]"
+                            title="Sao chép mã nguồn"
+                            id="btn_copy_code"
+                          >
+                            {copiedCode ? <Check className="w-3.5 h-3.5 text-[#4edea3]" /> : <Copy className="w-3.5 h-3.5 text-[#00f0ff]" />}
+                          </button>
 
-<pre className="text-left text-[#b9cacb] leading-relaxed select-text font-mono text-xs">
-<span className="text-emerald-500"># Thư viện mã hóa cơ bản</span>{"\n"}
-<span className="text-sky-400">from</span> Crypto.PublicKey <span className="text-sky-400">import</span> RSA{"\n"}
-<span className="text-sky-400">from</span> Crypto.Cipher <span className="text-sky-400">import</span> PKCS1_OAEP{"\n"}
-{"\n"}
-<span className="text-emerald-500"># 1. Tạo cặp khóa RSA 2048-bit</span>{"\n"}
-key = RSA.<span className="text-amber-300">generate</span>(2048){"\n"}
-private_key = key.<span className="text-amber-300">export_key</span>(){"\n"}
-public_key = key.<span className="text-amber-200">publickey</span>().<span className="text-amber-300">export_key</span>(){"\n"}
-{"\n"}
-<span className="text-emerald-500"># 2. Mã hóa dữ liệu với Khóa Công Khai</span>{"\n"}
-message = <span className="text-amber-200">b&quot;Thong tin tuyet mat ve InfosecAI&quot;</span>{"\n"}
-cipher = PKCS1_OAEP.<span className="text-amber-300">new</span>(RSA.<span className="text-amber-300">import_key</span>(public_key)){"\n"}
-ciphertext = cipher.<span className="text-amber-300">encrypt</span>(message){"\n"}
-{"\n"}
-<span className="text-sky-400">print</span>(<span className="text-amber-100">f&quot;Dữ liệu đã mã hóa: <span className="text-cyan-300">{"{"}ciphertext.hex()[:50]{"}"}</span>...&quot;</span>)
-</pre>
+                          <pre className="text-left text-[#b9cacb] leading-relaxed select-text font-mono text-xs whitespace-pre-wrap">
+                            {MODULE_LECTURES[readingModuleId || 4]?.code}
+                          </pre>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </article>
 
                   {/* CRUCIAL QUIZ ENGINE UI CARD */}
@@ -1736,7 +2446,7 @@ ciphertext = cipher.<span className="text-amber-300">encrypt</span>(message){"\n
                         <HelpCircle className="w-5 h-5 text-[#fed639]" />
                         <h4 className="text-sm font-bold text-white uppercase tracking-wider">Hệ thống Trắc nghiệm Đánh giá (VWA Quiz Engine)</h4>
                       </div>
-                      <span className="text-xs font-mono text-[#849495] bg-[#051424] px-2 py-1 rounded">Mô-đun 4</span>
+                      <span className="text-xs font-mono text-[#00f0ff] bg-[#051424] px-2 py-1 rounded">Mô-đun {selectedQuizModule}</span>
                     </div>
 
                     <div className="p-5" id="quiz_body_content">
@@ -1746,13 +2456,33 @@ ciphertext = cipher.<span className="text-amber-300">encrypt</span>(message){"\n
                         <div className="text-center py-6 space-y-4" id="quiz_splash">
                           <Award className="w-16 h-16 text-[#fed639] mx-auto animate-bounce" />
                           <div className="space-y-2">
-                            <h5 className="text-base font-bold text-white">Xác minh Chứng nhận Mô-đun 04</h5>
+                            <h5 className="text-base font-bold text-white">Xác minh Chứng nhận Mô-đun 0{selectedQuizModule}</h5>
                             <p className="text-xs text-[#b9cacb] max-w-md mx-auto leading-relaxed">
-                              Vượt qua {MODULE_QUESTIONS.length} câu hỏi trắc nghiệm chuyên sâu về thuật toán RSA thuật toán bất đối xứng để nhận ngay <strong>+150 XP</strong>, nâng cấp lớp học và kích hoạt chứng chỉ lưu hồ sơ online.
+                              Vượt qua {activeQuestions.length} câu hỏi trắc nghiệm chuyên sâu để nhận ngay <strong>+{150 + (activeQuestions.length * 10)} XP</strong>, tích lũy điểm thực tế học tập và đồng bộ lên cơ sở dữ liệu.
                             </p>
                           </div>
+
+                          {/* Beautiful Interactive Module Dropdown Selector */}
+                          <div className="max-w-xs mx-auto space-y-1.5 text-left bg-[#051424] border border-[#1c2b3c] p-3 rounded-lg">
+                            <label className="text-[10px] font-mono uppercase text-[#849495] tracking-wider block">Chọn Mô-đun Cần Kiểm Tra:</label>
+                            <select 
+                              value={selectedQuizModule}
+                              onChange={(e) => {
+                                setSelectedQuizModule(Number(e.target.value));
+                                setQuizState('splash');
+                              }}
+                              className="w-full bg-[#0d1c2d] border border-[#1c2b3c] hover:border-[#00f0ff]/50 rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#00f0ff] font-mono transition-all"
+                            >
+                              <option value={1}>Mô-đun 1: Nhập môn Mã hóa & Mã đối xứng (12 câu)</option>
+                              <option value={2}>Mô-đun 2: Bảo mật ứng dụng Web (12 câu)</option>
+                              <option value={3}>Mô-đun 3: An ninh hạ tầng mạng (12 câu)</option>
+                              <option value={4}>Mô-đun 4: Mật mã học nâng cao & RSA (12 câu)</option>
+                              <option value={5}>Mô-đun 5: Trắc nghiệm Chuyên sâu Chuyên gia (40 câu)</option>
+                              <option value={6}>Mô-đun 6: Mật mã học Toàn diện (60 câu)</option>
+                            </select>
+                          </div>
                           
-                          {module4Progress === 100 && (
+                          {completedQuizzes[selectedQuizModule] && (
                             <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#00311f] border border-[#10b981]/50 text-[#10b981] text-xs font-semibold rounded">
                               <CheckCircle className="w-4 h-4" />
                               Bạn đã vượt qua bài thi này rồi!
@@ -1776,22 +2506,25 @@ ciphertext = cipher.<span className="text-amber-300">encrypt</span>(message){"\n
                                 Lịch sử ôn tập & lần thử ({quizAttemptsCount})
                               </h5>
                               <div className="space-y-2 max-h-[160px] overflow-y-auto pr-1 text-[11px] custom-scrollbar" id="splash_history_scroller">
-                                {quizHistory.map((att, iIdx) => (
-                                  <div key={iIdx} className="bg-[#122131]/60 border border-[#273647]/40 p-2.5 rounded flex justify-between items-center gap-2">
-                                    <div>
-                                      <p className="text-white font-semibold">Lần thi ngày {att.timestamp}</p>
-                                      <p className="text-[#849495] mt-0.5">
-                                        Kết quả: <span className={att.score >= 48 ? 'text-[#4edea3]' : 'text-[#ffb4ab]'}>{att.score}/{att.totalQuestions} câu đúng</span>
-                                        {att.incorrectQuestions.length > 0 && ` (${att.incorrectQuestions.length} lỗi sai)`}
-                                      </p>
+                                {quizHistory.map((att, iIdx) => {
+                                  const isAttPassed = att.score >= Math.ceil(att.totalQuestions * 0.8);
+                                  return (
+                                    <div key={iIdx} className="bg-[#122131]/60 border border-[#273647]/40 p-2.5 rounded flex justify-between items-center gap-2">
+                                      <div>
+                                        <p className="text-white font-semibold">Lần thi ngày {att.timestamp}</p>
+                                        <p className="text-[#849495] mt-0.5">
+                                          Kết quả: <span className={isAttPassed ? 'text-[#4edea3]' : 'text-[#ffb4ab]'}>{att.score}/{att.totalQuestions} câu đúng</span>
+                                          {att.incorrectQuestions.length > 0 && ` (${att.incorrectQuestions.length} lỗi sai)`}
+                                        </p>
+                                      </div>
+                                      <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${
+                                        isAttPassed ? 'bg-[#003824] text-[#10b981]' : 'bg-[#690005]/40 text-[#ffb4ab]'
+                                      }`}>
+                                        {isAttPassed ? 'ĐẠT' : 'THI LẠI'}
+                                      </span>
                                     </div>
-                                    <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${
-                                      att.score >= 48 ? 'bg-[#003824] text-[#10b981]' : 'bg-[#690005]/40 text-[#ffb4ab]'
-                                    }`}>
-                                      {att.score >= 48 ? 'ĐẠT' : 'THI LẠI'}
-                                    </span>
-                                  </div>
-                                ))}
+                                  );
+                                })}
                               </div>
                             </div>
                           )}
@@ -1805,22 +2538,22 @@ ciphertext = cipher.<span className="text-amber-300">encrypt</span>(message){"\n
                           
                           {/* Progress indicator */}
                           <div className="flex justify-between items-center text-xs font-mono" id="quiz_progress">
-                            <span className="text-[#849495]">Câu hỏi {currentQuestionIndex + 1} / {MODULE_QUESTIONS.length}</span>
-                            <span className="text-[#00f0ff] font-bold">Tiến trình: {Math.round(((currentQuestionIndex) / MODULE_QUESTIONS.length) * 100)}%</span>
+                            <span className="text-[#849495]">Câu hỏi {currentQuestionIndex + 1} / {activeQuestions.length}</span>
+                            <span className="text-[#00f0ff] font-bold">Tiến trình: {Math.round(((currentQuestionIndex) / activeQuestions.length) * 100)}%</span>
                           </div>
 
                           <div className="w-full h-1 bg-[#051424] rounded-full overflow-hidden">
-                            <div className="h-full bg-[#00f0ff] transition-all" style={{ width: `${((currentQuestionIndex) / MODULE_QUESTIONS.length) * 100}%` }} />
+                            <div className="h-full bg-[#00f0ff] transition-all" style={{ width: `${((currentQuestionIndex) / activeQuestions.length) * 100}%` }} />
                           </div>
 
                           {/* Question text */}
                           <div className="bg-[#122131]/60 p-4 border border-[#1c2b3c] rounded text-sm font-semibold text-white leading-relaxed">
-                            {MODULE_QUESTIONS[currentQuestionIndex].questionText}
+                            {activeQuestions[currentQuestionIndex]?.questionText}
                           </div>
 
                           {/* Options checklist */}
                           <div className="space-y-2.5" id="quiz_options">
-                            {MODULE_QUESTIONS[currentQuestionIndex].options.map((option, idx) => {
+                            {activeQuestions[currentQuestionIndex]?.options.map((option, idx) => {
                               const isSelected = selectedAnswers[currentQuestionIndex] === idx;
                               return (
                                 <button 
@@ -1850,20 +2583,20 @@ ciphertext = cipher.<span className="text-amber-300">encrypt</span>(message){"\n
                           {showExplanation && (
                             <div className="mt-4 p-4 rounded bg-[#122131] border-l-4 border-[#00f0ff] space-y-2 animate-fade-in" id="quiz_explanation_block">
                               <div className="flex items-center gap-2 font-bold text-xs" id="quiz_feedback_result">
-                                {selectedAnswers[currentQuestionIndex] === MODULE_QUESTIONS[currentQuestionIndex].correctAnswerIndex ? (
+                                {selectedAnswers[currentQuestionIndex] === activeQuestions[currentQuestionIndex]?.correctAnswerIndex ? (
                                   <div className="text-[#4edea3] flex items-center gap-1">
                                     <CheckCircle className="w-4 h-4" />
-                                    Chính xác! (+50 XP hệ thống)
+                                    Chính xác!
                                   </div>
                                 ) : (
                                   <div className="text-[#ffb4ab] flex items-center gap-1">
                                     <AlertCircle className="w-4 h-4" />
-                                    Chưa chính xác! Đáp án đúng: {String.fromCharCode(65 + MODULE_QUESTIONS[currentQuestionIndex].correctAnswerIndex)}
+                                    Chưa chính xác! Đáp án đúng: {String.fromCharCode(65 + (activeQuestions[currentQuestionIndex]?.correctAnswerIndex || 0))}
                                   </div>
                                 )}
                               </div>
                               <p className="text-xs text-[#b9cacb] leading-relaxed">
-                                {MODULE_QUESTIONS[currentQuestionIndex].explanation}
+                                {activeQuestions[currentQuestionIndex]?.explanation}
                               </p>
                             </div>
                           )}
@@ -1889,7 +2622,7 @@ ciphertext = cipher.<span className="text-amber-300">encrypt</span>(message){"\n
                                 className="px-5 py-2 bg-[#10b981] hover:bg-[#4edea3] text-white rounded text-xs font-bold uppercase tracking-wider flex items-center gap-1 transition-all"
                                 id="btn_next_question"
                               >
-                                {currentQuestionIndex < MODULE_QUESTIONS.length - 1 ? 'Tiếp tục câu sau' : 'Xem kết quả bài thi'}
+                                {currentQuestionIndex < activeQuestions.length - 1 ? 'Tiếp tục câu sau' : 'Xem kết quả bài thi'}
                                 <ChevronRight className="w-4 h-4" />
                               </button>
                             )}
@@ -1899,69 +2632,74 @@ ciphertext = cipher.<span className="text-amber-300">encrypt</span>(message){"\n
                       )}
 
                       {/* RESULT SUMMARY PAGE */}
-                      {quizState === 'result' && (
-                        <div className="text-center py-6 space-y-5 animate-fade-in" id="quiz_score_result">
-                          
-                          {quizScore >= 48 ? (
-                            <div className="space-y-4">
-                              <Trophy className="w-16 h-16 text-[#fed639] mx-auto animate-bounce" />
-                              <div className="space-y-1">
-                                <h5 className="text-lg font-bold text-[#4edea3]">Chúc mừng xuất sắc! Bạn đạt {quizScore} / {MODULE_QUESTIONS.length} điểm!</h5>
-                                <p className="text-xs text-[#b9cacb] leading-relaxed max-w-sm mx-auto">
-                                  Hệ thống Học viện An toàn VWA đã đồng bộ hóa thành tích của bạn! <br />
-                                  Bạn nhận được <strong>+150 XP</strong> và chính thức hoàn thành khóa học đánh giá toàn diện <strong className="text-[#00f0ff]">Trắc nghiệm An toàn mạng VWA (60 Câu hỏi)</strong>.
-                                </p>
+                      {quizState === 'result' && (() => {
+                        const totalQs = activeQuestions.length;
+                        const passingScore = Math.ceil(totalQs * 0.8);
+                        const isPassed = quizScore >= passingScore;
+                        return (
+                          <div className="text-center py-6 space-y-5 animate-fade-in" id="quiz_score_result">
+                            
+                            {isPassed ? (
+                              <div className="space-y-4">
+                                <Trophy className="w-16 h-16 text-[#fed639] mx-auto animate-bounce" />
+                                <div className="space-y-1">
+                                  <h5 className="text-lg font-bold text-[#4edea3]">Chúc mừng xuất sắc! Bạn đạt {quizScore} / {totalQs} điểm!</h5>
+                                  <p className="text-xs text-[#b9cacb] leading-relaxed max-w-sm mx-auto">
+                                    Hệ thống Học viện An toàn VWA đã đồng bộ hóa thành tích của bạn! <br />
+                                    Bạn nhận được <strong>+{150 + (totalQs * 10)} XP</strong> và chính thức vượt qua <strong className="text-[#00f0ff]">Đánh giá Mô-đun 0{selectedQuizModule} ({totalQs} Câu hỏi)</strong>.
+                                  </p>
+                                </div>
+                                <div className="inline-flex gap-1.5 px-3 py-1 bg-[#003824] text-[#10b981] text-xs font-semibold rounded-full border border-[#10b981]/40">
+                                  🎖️ Đã mở khóa chứng chỉ Học viện VWA
+                                </div>
                               </div>
-                              <div className="inline-flex gap-1.5 px-3 py-1 bg-[#003824] text-[#10b981] text-xs font-semibold rounded-full border border-[#10b981]/40">
-                                🎖️ Đã mở khóa chứng chỉ Học viện VWA
+                            ) : (
+                              <div className="space-y-4">
+                                <AlertCircle className="w-16 h-16 text-[#ffb4ab] mx-auto" />
+                                <div className="space-y-1">
+                                  <h5 className="text-base font-bold text-white">Bạn đạt: {quizScore} / {totalQs} điểm!</h5>
+                                  <p className="text-xs text-[#b9cacb] leading-relaxed max-w-xs mx-auto">
+                                    Để vượt qua bài thực hành đánh giá và đồng bộ kết quả, bạn cần đạt tối thiểu <strong>{passingScore} / {totalQs} điểm (80%)</strong>. Hãy ôn tập lại lý thuyết và Thử lại nhé!
+                                  </p>
+                                </div>
                               </div>
-                            </div>
-                          ) : (
-                            <div className="space-y-4">
-                              <AlertCircle className="w-16 h-16 text-[#ffb4ab] mx-auto" />
-                              <div className="space-y-1">
-                                <h5 className="text-base font-bold text-white">Bạn đạt: {quizScore} / {MODULE_QUESTIONS.length} điểm!</h5>
-                                <p className="text-xs text-[#b9cacb] leading-relaxed max-w-xs mx-auto">
-                                  Để vượt qua bài thực hành đánh giá và đồng bộ kết quả, bạn cần đạt tối thiểu <strong>48 / 60 điểm (80%)</strong>. Hãy ôn tập lại lý thuyết và Thử lại nhé!
-                                </p>
-                              </div>
-                            </div>
-                          )}
+                            )}
 
-                          <div className="pt-2 flex flex-col sm:flex-row justify-center items-center gap-3">
-                            <button 
-                              onClick={resetQuiz}
-                              className="w-full sm:w-auto px-5 py-2 border border-[#273647] hover:border-[#00f0ff]/50 text-white rounded text-xs font-bold uppercase transition-all"
-                              id="btn_retry_quiz"
-                            >
-                              Làm lại bài thi
-                            </button>
-                            {incorrectQuestionIndices.length > 0 && (
+                            <div className="pt-2 flex flex-col sm:flex-row justify-center items-center gap-3">
                               <button 
-                                onClick={() => {
-                                  setQuizState('review');
-                                  setReviewIndex(0);
-                                }}
-                                className="w-full sm:w-auto px-5 py-2 bg-[#d97706]/20 border border-[#d97706] hover:bg-[#d97706]/40 text-[#fcd34d] hover:text-white rounded text-xs font-bold uppercase transition-all flex items-center justify-center gap-1.5"
-                                id="btn_enter_review"
+                                onClick={resetQuiz}
+                                className="w-full sm:w-auto px-5 py-2 border border-[#273647] hover:border-[#00f0ff]/50 text-white rounded text-xs font-bold uppercase transition-all"
+                                id="btn_retry_quiz"
                               >
-                                <BookOpen className="w-4 h-4 text-[#fcd34d]" />
-                                Ôn tập câu sai ({incorrectQuestionIndices.length})
+                                Làm lại bài thi
                               </button>
-                            )}
-                            {quizScore >= 48 && (
-                              <button 
-                                onClick={() => { setActiveTab('modules'); setReadingModuleId(null); }}
-                                className="w-full sm:w-auto px-5 py-2 bg-[#00f0ff] hover:bg-[#7df4ff] text-[#051424] rounded text-xs font-bold uppercase transition-all"
-                                id="btn_view_certs"
-                              >
-                                Trở lại mô-đun
-                              </button>
-                            )}
+                              {incorrectQuestionIndices.length > 0 && (
+                                <button 
+                                  onClick={() => {
+                                    setQuizState('review');
+                                    setReviewIndex(0);
+                                  }}
+                                  className="w-full sm:w-auto px-5 py-2 bg-[#d97706]/20 border border-[#d97706] hover:bg-[#d97706]/40 text-[#fcd34d] hover:text-white rounded text-xs font-bold uppercase transition-all flex items-center justify-center gap-1.5"
+                                  id="btn_enter_review"
+                                >
+                                  <BookOpen className="w-4 h-4 text-[#fcd34d]" />
+                                  Ôn tập câu sai ({incorrectQuestionIndices.length})
+                                </button>
+                              )}
+                              {isPassed && (
+                                <button 
+                                  onClick={() => { setActiveTab('modules'); setReadingModuleId(null); }}
+                                  className="w-full sm:w-auto px-5 py-2 bg-[#00f0ff] hover:bg-[#7df4ff] text-[#051424] rounded text-xs font-bold uppercase transition-all"
+                                  id="btn_view_certs"
+                                >
+                                  Trở lại mô-đun
+                                </button>
+                              )}
+                            </div>
+
                           </div>
-
-                        </div>
-                      )}
+                        );
+                      })()}
 
                       {/* REVIEW INCORRECT ANSWERS STATE */}
                       {quizState === 'review' && (
@@ -1987,20 +2725,20 @@ ciphertext = cipher.<span className="text-amber-300">encrypt</span>(message){"\n
                             <div className="space-y-4" id="review_content_body">
                               <div className="flex justify-between items-center text-xs font-mono text-[#849495]" id="review_info_row">
                                 <span>Câu sai số: {reviewIndex + 1} / {incorrectQuestionIndices.length}</span>
-                                <span>ID gốc: #{MODULE_QUESTIONS[incorrectQuestionIndices[reviewIndex]].id}</span>
+                                <span>ID gốc: #{activeQuestions[incorrectQuestionIndices[reviewIndex]]?.id}</span>
                               </div>
 
                               {/* Question Section */}
                               <div className="bg-[#122131]/60 p-4 border border-[#1c2b3c] rounded text-sm font-semibold text-white leading-relaxed">
-                                {MODULE_QUESTIONS[incorrectQuestionIndices[reviewIndex]].questionText}
+                                {activeQuestions[incorrectQuestionIndices[reviewIndex]]?.questionText}
                               </div>
 
                               {/* Interactive highlighted responses */}
                               <div className="space-y-2.5" id="review_options_list">
-                                {MODULE_QUESTIONS[incorrectQuestionIndices[reviewIndex]].options.map((option, idx) => {
+                                {activeQuestions[incorrectQuestionIndices[reviewIndex]]?.options.map((option, idx) => {
                                   const actualIndex = incorrectQuestionIndices[reviewIndex];
                                   const wasSelected = selectedAnswers[actualIndex] === idx;
-                                  const isCorrect = MODULE_QUESTIONS[actualIndex].correctAnswerIndex === idx;
+                                  const isCorrect = activeQuestions[actualIndex]?.correctAnswerIndex === idx;
 
                                   let optionStyle = "bg-[#051424]/40 border-[#1a2c3f] text-[#b9cacb]";
                                   if (wasSelected) {
@@ -2049,7 +2787,7 @@ ciphertext = cipher.<span className="text-amber-300">encrypt</span>(message){"\n
                                   <span>Phân tích đáp án & Giải thích học thuật:</span>
                                 </div>
                                 <p className="text-xs text-[#b9cacb] leading-relaxed">
-                                  {MODULE_QUESTIONS[incorrectQuestionIndices[reviewIndex]].explanation}
+                                  {activeQuestions[incorrectQuestionIndices[reviewIndex]]?.explanation}
                                 </p>
                               </div>
 
@@ -2150,11 +2888,11 @@ ciphertext = cipher.<span className="text-amber-300">encrypt</span>(message){"\n
                           </div>
 
                           {/* Text bubble box */}
-                          <div className="space-y-1">
+                          <div className="space-y-1 bg-transparent">
                             <div className={`p-3 rounded-md text-xs leading-relaxed ${
                               isBot ? 'bg-[#1c2b3c] text-white border border-[#273647]' : 'bg-[#00f0ff] text-[#051424] font-medium'
                             }`}>
-                              <p className="whitespace-pre-line">{msg.text}</p>
+                              {isBot ? renderFormattedMessage(msg.text) : <p className="whitespace-pre-line">{msg.text}</p>}
                             </div>
                             <span className="block text-[10px] text-[#849495] font-mono">{msg.time}</span>
                           </div>
@@ -2184,24 +2922,15 @@ ciphertext = cipher.<span className="text-amber-300">encrypt</span>(message){"\n
 
                   {/* Suggestion Chips list */}
                   <div className="border-t border-[#1c2b3c] p-3 bg-[#051424]/40 overflow-x-auto whitespace-nowrap flex gap-2" id="quick_prompt_chips">
-                    <button 
-                      onClick={() => handleSuggestionClick("Hãy cho tôi một ví dụ thực tế cực kỳ dễ hiểu về cách hoạt động của mã hóa RSA.")}
-                      className="px-2.5 py-1.5 bg-[#122131] hover:bg-[#1c2b3c] text-[11px] text-[#00f0ff] border border-[#273647] hover:border-[#00f0ff]/40 rounded transition-all cursor-pointer font-medium"
-                    >
-                      💡 Ví dụ thực tế
-                    </button>
-                    <button 
-                      onClick={() => handleSuggestionClick("Giải thích RSA như thể tôi là học sinh cấp 2.")}
-                      className="px-2.5 py-1.5 bg-[#122131] hover:bg-[#1c2b3c] text-[11px] text-[#00f0ff] border border-[#273647] hover:border-[#00f0ff]/40 rounded transition-all cursor-pointer font-medium"
-                    >
-                      ✏️ Đơn giản hóa khái niệm
-                    </button>
-                    <button 
-                      onClick={() => handleSuggestionClick("Hãy đặt một câu đố nhỏ để kiểm tra tôi về thuật toán RSA!")}
-                      className="px-2.5 py-1.5 bg-[#122131] hover:bg-[#1c2b3c] text-[11px] text-[#00f0ff] border border-[#273647] hover:border-[#00f0ff]/40 rounded transition-all cursor-pointer font-medium"
-                    >
-                      ⚡ Kiểm tra tôi
-                    </button>
+                    {getSuggestionChipsForModule(readingModuleId).map((chip, idx) => (
+                      <button 
+                        key={idx}
+                        onClick={() => handleSuggestionClick(chip.prompt)}
+                        className="px-2.5 py-1.5 bg-[#122131] hover:bg-[#1c2b3c] text-[11px] text-[#00f0ff] border border-[#273647] hover:border-[#00f0ff]/40 rounded transition-all cursor-pointer font-medium"
+                      >
+                        {chip.text}
+                      </button>
+                    ))}
                   </div>
 
                   {/* Inpuy messaging area */}
@@ -2325,7 +3054,7 @@ ciphertext = cipher.<span className="text-amber-300">encrypt</span>(message){"\n
                         <div className={`p-4 rounded-xl text-xs leading-relaxed shadow-md ${
                           isBot ? 'bg-[#1c2b3c] text-white border border-[#273647]' : 'bg-[#00f0ff] text-[#051424] font-medium'
                         }`}>
-                          <p className="whitespace-pre-line">{msg.text}</p>
+                          {isBot ? renderFormattedMessage(msg.text) : <p className="whitespace-pre-line">{msg.text}</p>}
                         </div>
                         <span className="block text-[10px] text-[#849495] font-mono">{msg.time}</span>
                       </div>
@@ -2406,8 +3135,8 @@ ciphertext = cipher.<span className="text-amber-300">encrypt</span>(message){"\n
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           
           <div className="space-y-1 text-center md:text-left">
-            <h5 className="font-bold text-white text-xs">Học viện An toàn VWA 🛡️</h5>
-            <p className="text-[11px]">© 2026 Học viện An toàn VWA. Nền tảng học tập mật mã học & an ninh mạng thế hệ mới hỗ trợ bởi Trí tuệ Nhân tạo và Trợ lý ảo AI.</p>
+            <h5 className="font-bold text-white text-xs">HỌC VIỆN AN TOÀN VWA 🛡️</h5>
+            <p className="text-[11px]">© 2026 HỌC VIỆN AN TOÀN VWA. Nền tảng học tập mật mã học & an ninh mạng thế hệ mới hỗ trợ bởi Trí tuệ Nhân tạo và Trợ lý ảo AI.</p>
           </div>
 
           <div className="flex flex-wrap justify-center gap-6 text-[11px]" id="footer-links">

@@ -1,6 +1,6 @@
 {
-  "name": "Học viện An toàn VWA",
-  "description": "Nền tảng học tập an ninh mạng và trợ lý mật mã học của Học viện An toàn VWA với trợ lý ảo hỗ trợ 40 câu hỏi trắc nghiệm.",
+  "name": "HỌC VIỆN AN TOÀN VWA",
+  "description": "Nền tảng học tập an ninh mạng, mật mã học nâng cao và trợ lý AI thông minh của Học viện An toàn VWA.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

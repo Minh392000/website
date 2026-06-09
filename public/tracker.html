@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Theo Dõi Tiến Độ Toàn Cầu VWA</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom font import for modern technical look */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #051424;
+        }
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        /* Custom glow transition effects */
+        .neon-glow {
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        .neon-glow:hover {
+            box-shadow: 0 0 35px rgba(0, 240, 255, 0.4);
+        }
+        .loader {
+            border-top-color: #00f0ff;
+            animation: spinner 1.5s linear infinite;
+        }
+        @keyframes spinner {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="text-white min-h-screen flex items-center justify-center p-4 selection:bg-[#00f0ff]/20">
+
+    <div class="max-w-xl w-full bg-[#0d1c2d] border border-[#1c2b3c] rounded-2xl p-8 shadow-[0_10px_40px_rgba(1,15,31,0.6)] space-y-8 relative overflow-hidden" id="tracker_container">
+        
+        <!-- Decorative Header Spark Lines -->
+        <div class="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-[#00f0ff] via-[#10b981] to-[#00f0ff] animate-pulse"></div>
+
+        <!-- Header Section -->
+        <div class="space-y-3 text-center">
+            <div class="inline-flex gap-2.5 px-3 py-1 bg-[#002f35] text-[#00f0ff] text-xs font-semibold rounded-full border border-[#00f0ff]/30 items-center justify-center">
+                <span class="w-2 h-2 rounded-full bg-[#00f0ff] animate-ping"></span>
+                Dự án Giám Sát Thời Gian Thực (Active)
+            </div>
+            <h1 class="text-2xl font-black uppercase tracking-tight text-white leading-tight">
+                Real-time Global Tracker
+            </h1>
+            <p class="text-xs text-[#849495] max-w-sm mx-auto">
+                Theo dõi thời gian thực tiến độ học tập trên toàn cầu sử dụng cơ sở dữ liệu đám mây <strong class="text-white font-mono">Firebase Firestore v10</strong>.
+            </p>
+        </div>
+
+        <!-- Real-time Loading Overlay (Visible on start) -->
+        <div id="loading_mask" class="flex flex-col items-center justify-center py-10 space-y-4">
+            <div class="w-10 h-10 border-4 border-t-4 border-[#1c2b3c] rounded-full loader"></div>
+            <p class="text-xs text-[#849495] font-mono animate-pulse">Đang đồng bộ hóa với Firebase. Xin vui lòng chờ...</p>
+        </div>
+
+        <!-- Tracker UI Stats (Hidden until Loaded) -->
+        <div id="tracker_stats_view" class="hidden space-y-6">
+            
+            <!-- Progress visualizer container -->
+            <div class="space-y-2.5">
+                <div class="flex justify-between items-end text-xs font-mono">
+                    <span class="text-[#849495] uppercase tracking-wider">Tiến Độ Toàn Cầu</span>
+                    <span id="rate_text" class="text-[#00f0ff] font-bold text-sm">0%</span>
+                </div>
+                
+                <!-- Dynamic Progress Bar -->
+                <div class="w-full h-4 bg-[#051424] rounded-full overflow-hidden border border-[#1c2b3c] p-[2px]">
+                    <div id="progress_bar" class="h-full bg-gradient-to-r from-[#00f0ff] to-[#10b981] rounded-full transition-all duration-700 ease-out shadow-[0_0_10px_rgba(0,186,198,0.4)]" style="width: 0%"></div>
+                </div>
+                
+                <div class="flex justify-between text-[11px] text-[#849495] font-mono">
+                    <span>Mốc 0 KPI</span>
+                    <span>Mục tiêu: 100 Mô-đun</span>
+                </div>
+            </div>
+
+            <!-- Quantitative Stats Cards Grid -->
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-[#051424]/60 border border-[#1c2b3c] p-4 rounded-xl space-y-1">
+                    <p class="text-[10px] text-[#849495] font-mono uppercase tracking-widest">Đã hoàn thành</p>
+                    <p id="total_text" class="text-2xl font-black text-white font-mono">0</p>
+                    <p class="text-[10px] text-[#4edea3] font-medium leading-none">Mô-đun học tập</p>
+                </div>
+                <div class="bg-[#051424]/60 border border-[#1c2b3c] p-4 rounded-xl space-y-1">
+                    <p class="text-[10px] text-[#849495] font-mono uppercase tracking-widest">Tỷ lệ tích lũy</p>
+                    <p id="percent_text" class="text-2xl font-black text-white font-mono">0%</p>
+                    <p class="text-[10px] text-[#00f0ff] font-medium leading-none">Toàn bộ sinh viên</p>
+                </div>
+            </div>
+
+            <!-- Interative Increment CTA Button -->
+            <button 
+                id="complete_module_btn"
+                class="w-full neon-glow py-3.5 px-6 rounded-xl bg-[#00f0ff] text-[#051424] hover:bg-[#7df4ff] text-xs font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all transform active:scale-[0.98]"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Complete Module & Update Progress
+            </button>
+
+            <!-- Real-time Event Notification Badge -->
+            <div id="sync_badge" class="bg-[#051424] border border-[#1c2b3c] p-3 rounded-lg text-center flex items-center justify-center gap-2.5">
+                <span class="w-2 h-2 rounded-full bg-[#10b981] animate-ping"></span>
+                <p class="text-[10px] text-[#849495] font-mono uppercase tracking-wider">Đã đồng bộ hóa Cloud Firestore</p>
+            </div>
+
+        </div>
+
+        <!-- Educational/Integrational Metadata Info Panel -->
+        <div class="border-t border-[#1c2b3c] pt-5 space-y-3.5">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono flex items-center gap-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Hướng dẫn cấu hình dành cho quản trị viên
+            </h3>
+            <ul class="text-[11px] text-[#b9cacb] list-decimal list-inside space-y-2 leading-relaxed">
+                <li>Truy cập <a href="https://console.firebase.google.com" target="_blank" class="text-[#00f0ff] hover:underline font-semibold font-mono">Firebase Console</a>, tạo một Project mới.</li>
+                <li>Tạo một cơ sở dữ liệu <strong class="text-white">Cloud Firestore</strong> ở chế độ Thử nghiệm (Test Mode) với quy tắc đọc/ghi tự do.</li>
+                <li>Sao chép thông tin cấu hình API Keys của ứng dụng web (App Web Configuration) và dán đè trực tiếp thay thế đối tượng <code class="text-[#00f0ff] font-mono">firebaseConfig</code> ở dòng số 129 trong mã nguồn của tệp HTML này.</li>
+                <li>Mở tệp HTML này trên bất kỳ trình duyệt hoặc máy chủ local nào. Các phiên kết nối khác nhau sẽ đồng bộ đồng thời khi bạn nhấn cập nhật!</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Firebase v10 Modular SDK JS Scripts -->
+    <script type="module">
+        // -------------------------------------------------------------
+        // 1. NHẬP KHẨU CÁC THƯ VIỆN MODULE TỪ FIREBASE v10 CDN CHÍNH THỨC
+        // -------------------------------------------------------------
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { 
+            getFirestore, 
+            doc, 
+            onSnapshot, 
+            updateDoc, 
+            setDoc, 
+            getDoc, 
+            increment 
+        } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        // -------------------------------------------------------------
+        // 2. CẤU HÌNH THÔNG SỐ KỸ THUẬT DỰ ÁN FIREBASE CỦA BẠN
+        // HÃY DÁN TOÀN BỘ API KEYS THẬT ĐƯỢC CẤP TỪ CONSOLE VÀO ĐÂY!
+        // -------------------------------------------------------------
+        const firebaseConfig = {
+            apiKey: "AIzaSyFakeKeyPlaceholderForInfoSecAI2026",
+            authDomain: "infosecai-vwa.firebaseapp.com",
+            projectId: "infosecai-vwa",
+            storageBucket: "infosecai-vwa.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:abcdef123456abcdef",
+            measurementId: "G-MEASUREMENTID"
+        };
+
+        // Khởi tạo các hàm cốt lõi sau khi nạp cấu hình
+        let app, db;
+        let isFirebaseConnected = false;
+
+        // Trỏ tới tài liệu lưu trữ thống kê tiến độ: platformStats/progress
+        let docRef;
+
+        try {
+            app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            docRef = doc(db, "platformStats", "progress");
+            isFirebaseConnected = true;
+            console.log("Khởi chạy Firebase v10 SDK thành công!");
+        } catch (error) {
+            console.warn("Chưa kết nối được Firebase thật do cấu hình đang ở chế độ mô phỏng / Placeholder.", error);
+        }
+
+        // Định vị các phần tử UI của Trang qua ID
+        const loadingMask = document.getElementById("loading_mask");
+        const statsView = document.getElementById("tracker_stats_view");
+        const progressBar = document.getElementById("progress_bar");
+        const rateText = document.getElementById("rate_text");
+        const totalText = document.getElementById("total_text");
+        const percentText = document.getElementById("percent_text");
+        const completeBtn = document.getElementById("complete_module_btn");
+
+        // Biến cục bộ lưu tiến trình giả lập nhạy bén trong trường hợp dùng API key placeholder
+        let localStatsFallback = {
+            totalCompleted: 45 // Chỉ số mẫu khi offline
+        };
+
+        // -------------------------------------------------------------
+        // 3. LOGIC THEO DÕI THỜI GIAN THỰC (REAL-TIME LISTENER) SỬ DỤNG ONSNAPSHOT
+        // -------------------------------------------------------------
+        
+        function updateUI(totalCompleted) {
+            // Mục tiêu mục tiêu hoàn thành là 100 mô-đun an ninh mạng
+            const targetGoal = 100;
+            
+            // Tính toán Phần trăm Tiến độ của nền tảng học tập
+            const pct = Math.min(100, Math.round((totalCompleted / targetGoal) * 100));
+
+            // Cập nhật các giá trị văn bản trực quan
+            rateText.innerText = `${pct}%`;
+            totalText.innerText = totalCompleted.toLocaleString();
+            percentText.innerText = `${pct}%`;
+
+            // Thay đổi chiều rộng thanh tiến trình cùng chu kỳ hiệu ứng mượt mà
+            progressBar.style.width = `${pct}%`;
+
+            // Ẩn mặt nạ tải và xuất hiện giao diện đầy đủ sau lần nạp đầu tiên
+            loadingMask.classList.add("hidden");
+            statsView.classList.remove("hidden");
+        }
+
+        if (isFirebaseConnected && !firebaseConfig.apiKey.includes("FakeKey")) {
+            // LẮNG NGHE ĐỒNG BỘ SUỐT THỜI GIAN THỰC QUA ONSNAPSHOT (Firestore Real-time Sync)
+            onSnapshot(docRef, (snapshot) => {
+                if (snapshot.exists()) {
+                    const data = snapshot.data();
+                    const totalCompleted = data.totalCompleted || 0;
+                    updateUI(totalCompleted);
+                } else {
+                    // Nếu tài liệu chưa được khởi tạo trên DB, tiến hành thiết lập đối tượng rỗng đầu tiên
+                    const initialData = { totalCompleted: 0 };
+                    setDoc(docRef, initialData).then(() => {
+                        updateUI(0);
+                    }).catch(error => console.error("Lỗi tạo bản ghi đầu tiên: ", error));
+                }
+            }, (error) => {
+                console.error("Lỗi phân quyền Firestore / Security Rules: ", error);
+                // Kích hoạt mô phỏng cục bộ nếu dính lỗi quyền đọc
+                runMockMode();
+            });
+        } else {
+            // CHẠY CHỂ ĐỘ MÔ PHỎNG (MOCK MODE) nến tài khoản cấu hình fake hoặc chưa dán thông số thật
+            console.log("Kích hoạt chế độ mô phỏng thời gian thực cục bộ.");
+            runMockMode();
+        }
+
+        function runMockMode() {
+            // Hiển thị UI ngay lập tức dựa trên dữ liệu lưu trữ local hoặc khởi tạo
+            updateUI(localStatsFallback.totalCompleted);
+            
+            // Đồng bộ mô phỏng qua LocalStorage để hỗ trợ mở nhiều tab khác nhau trong ứng dụng cùng cập nhật!
+            window.addEventListener('storage', (event) => {
+                if (event.key === "vwa_mock_global_progress") {
+                    const newTotal = parseInt(event.newValue) || 0;
+                    localStatsFallback.totalCompleted = newTotal;
+                    updateUI(newTotal);
+                }
+            });
+
+            // Khởi tạo trị lưu trữ trong LocalStorage
+            const savedLocal = localStorage.getItem("vwa_mock_global_progress");
+            if (savedLocal) {
+                localStatsFallback.totalCompleted = parseInt(savedLocal);
+                updateUI(localStatsFallback.totalCompleted);
+            } else {
+                localStorage.setItem("vwa_mock_global_progress", localStatsFallback.totalCompleted);
+            }
+        }
+
+        // -------------------------------------------------------------
+        // 4. LOGIC GHI NHẬN HÀNH VI CẬP NHẬT CỦA HỌC VIÊN SỬ DỤNG INCREMENT
+        // -------------------------------------------------------------
+        completeBtn.addEventListener("click", async () => {
+            // Vô hiệu hóa tạm thời để tránh spam yêu cầu liên thanh
+            completeBtn.disabled = true;
+            completeBtn.classList.add("opacity-60", "cursor-not-allowed");
+            
+            if (isFirebaseConnected && !firebaseConfig.apiKey.includes("FakeKey")) {
+                try {
+                    // SỬ DỤNG PHƯƠNG THỨC INCREMENT(1) ĐỂ TRÁNH XUNG ĐỘT KHI NHIỀU BÊN CÙNG CLICK
+                    await updateDoc(docRef, {
+                        totalCompleted: increment(1)
+                    });
+                    console.log("Tích lũy tiến trình Firestore thành công!");
+                } catch (error) {
+                    console.error("Lỗi cập nhật Firestore: ", error);
+                    alert("Cập nhật thất bại. Vui lòng kiểm tra lại cấu hình Security Rules của database.");
+                } finally {
+                    completeBtn.disabled = false;
+                    completeBtn.classList.remove("opacity-60", "cursor-not-allowed");
+                }
+            } else {
+                // Xử lý gia tăng cục bộ khi ở chế độ Mock Offline
+                localStatsFallback.totalCompleted += 1;
+                localStorage.setItem("vwa_mock_global_progress", localStatsFallback.totalCompleted);
+                updateUI(localStatsFallback.totalCompleted);
+                
+                // Hiệu ứng tương tác nổ bọt nhỏ
+                console.log(`[Chế độ Local] Đã cộng dồn thành công! Tổng số mô-đun: ${localStatsFallback.totalCompleted}`);
+                
+                setTimeout(() => {
+                    completeBtn.disabled = false;
+                    completeBtn.classList.remove("opacity-60", "cursor-not-allowed");
+                }, 300);
+            }
+        });
+    </script>
+</body>
+</html>
