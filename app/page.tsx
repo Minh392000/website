@@ -1358,6 +1358,51 @@ const renderFormattedMessage = (text: string) => {
   return renderedElements;
 };
 
+function shuffleArray<T>(array: T[]): T[] {
+  const result = [...array];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
+const shuffleQuestionOptions = (question: QuizQuestion): QuizQuestion => {
+  const correctOptionText = question.options[question.correctAnswerIndex];
+  const shuffledOptions = shuffleArray(question.options);
+  const newCorrectAnswerIndex = shuffledOptions.indexOf(correctOptionText);
+  return {
+    ...question,
+    options: shuffledOptions,
+    correctAnswerIndex: newCorrectAnswerIndex
+  };
+};
+
+const get20QuestionsForModule = (moduleId: number): QuizQuestion[] => {
+  let coreQuestions: QuizQuestion[] = [];
+  let otherQuestions: QuizQuestion[] = [];
+
+  if (moduleId === 6) {
+    const pool = MODULE_QUESTIONS.slice(0, 60);
+    const shuffledPool = shuffleArray(pool);
+    return shuffledPool.slice(0, 20).map(shuffleQuestionOptions);
+  } else if (moduleId === 5) {
+    const pool = MODULE_QUESTIONS.slice(0, 40);
+    const shuffledPool = shuffleArray(pool);
+    return shuffledPool.slice(0, 20).map(shuffleQuestionOptions);
+  } else {
+    const startIndex = (moduleId - 1) * 12;
+    coreQuestions = MODULE_QUESTIONS.slice(startIndex, startIndex + 12);
+    otherQuestions = MODULE_QUESTIONS.filter((_, idx) => idx < startIndex || idx >= startIndex + 12);
+
+    const shuffledOthers = shuffleArray(otherQuestions);
+    const needed = 20 - coreQuestions.length;
+    const combined = [...coreQuestions, ...shuffledOthers.slice(0, needed)];
+    
+    return shuffleArray(combined).map(shuffleQuestionOptions);
+  }
+};
+
 export default function SecurityLearningPlatform() {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'modules' | 'chat'>('dashboard');
   const [readingModuleId, setReadingModuleId] = useState<number | null>(null);
@@ -1443,10 +1488,10 @@ export default function SecurityLearningPlatform() {
     {
       id: 5,
       title: "Mô-đun 5: Trắc nghiệm Chuyên sâu Chuyên gia",
-      desc: "Đại học Syllabus - Bộ 40 câu trắc nghiệm chuyên sâu đa khía cạnh giúp đánh giá toàn diện năng lực lý thuyết an toàn và thực nghiệm.",
+      desc: "Đại học Syllabus - Bộ 20 câu trắc nghiệm chuyên sâu ngẫu nhiên giúp đánh giá toàn diện năng lực lý thuyết an toàn và thực nghiệm.",
       difficulty: "Rất khó",
       difficultyClass: "text-[#ffb4ab] bg-[#690005]/40",
-      timing: "40 Câu hỏi tốt nghiệp",
+      timing: "20 Câu hỏi ngẫu nhiên",
       progress: module5Progress,
       completedCount: globalStats.module5CompletedCount,
       icon: <Award className="w-5 h-5 text-[#fcd34d]" />
@@ -1454,10 +1499,10 @@ export default function SecurityLearningPlatform() {
     {
       id: 6,
       title: "Mô-đun 6: Mật mã học Toàn diện",
-      desc: "Bộ 60 câu hỏi trắc nghiệm chuyên biệt về giải thuật mật mã cổ điển, mật mã đối xứng, mã hóa công khai RSA và trao đổi khóa mật.",
+      desc: "Bộ 20 câu hỏi trắc nghiệm chuyên biệt chọn lọc ngẫu nhiên giúp củng cố kiến thức giải thuật mật mã học.",
       difficulty: "Khó",
       difficultyClass: "text-[#ffb4ab] bg-[#690005]/40",
-      timing: "60 Câu hỏi thực nghiệm",
+      timing: "20 Câu hỏi ngẫu nhiên",
       progress: module6Progress,
       completedCount: globalStats.module6CompletedCount,
       icon: <Award className="w-5 h-5 text-[#00f0ff]" />
@@ -1871,16 +1916,16 @@ print(f"Bản mã hóa Vigenere: {encrypted}")`
   const [reviewIndex, setReviewIndex] = useState(0);
   const [toast, setToast] = useState<{ show: boolean; title: string; message: string }>({ show: false, title: '', message: '' });
 
-  const activeQuestions = useMemo(() => {
-    if (selectedQuizModule === 6) {
-      return MODULE_QUESTIONS.slice(0, 60);
+  const [activeQuestions, setActiveQuestions] = useState<QuizQuestion[]>([]);
+
+  /* eslint-disable react-hooks/set-state-in-effect */
+  const isSplash = quizState === 'splash';
+  useEffect(() => {
+    if (selectedQuizModule) {
+      setActiveQuestions(get20QuestionsForModule(selectedQuizModule));
     }
-    if (selectedQuizModule === 5) {
-      return MODULE_QUESTIONS.slice(0, 40);
-    }
-    const startIndex = (selectedQuizModule - 1) * 12;
-    return MODULE_QUESTIONS.slice(startIndex, startIndex + 12);
-  }, [selectedQuizModule]);
+  }, [selectedQuizModule, isSplash]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const startQuiz = () => {
     setQuizState('playing');
@@ -1974,6 +2019,13 @@ print(f"Bản mã hóa Vigenere: {encrypted}")`
         setCompletedQuizzes(newCompleted);
         localStorage.setItem('vwa_completed_quizzes', JSON.stringify(newCompleted));
         
+        const p1 = selectedQuizModule === 1 ? 100 : module1Progress;
+        const p2 = selectedQuizModule === 2 ? 100 : module2Progress;
+        const p3 = selectedQuizModule === 3 ? 100 : module3Progress;
+        const p4 = selectedQuizModule === 4 ? 100 : module4Progress;
+        const p5 = selectedQuizModule === 5 ? 100 : module5Progress;
+        const p6 = selectedQuizModule === 6 ? 100 : module6Progress;
+
         if (selectedQuizModule === 1) setModule1Progress(100);
         if (selectedQuizModule === 2) setModule2Progress(100);
         if (selectedQuizModule === 3) setModule3Progress(100);
@@ -1981,12 +2033,12 @@ print(f"Bản mã hóa Vigenere: {encrypted}")`
         if (selectedQuizModule === 5) setModule5Progress(100);
         if (selectedQuizModule === 6) setModule6Progress(100);
         
-        localStorage.setItem('vwa_progress_1', selectedQuizModule === 1 ? '100' : String(module1Progress));
-        localStorage.setItem('vwa_progress_2', selectedQuizModule === 2 ? '100' : String(module2Progress));
-        localStorage.setItem('vwa_progress_3', selectedQuizModule === 3 ? '100' : String(module3Progress));
-        localStorage.setItem('vwa_progress_4', selectedQuizModule === 4 ? '100' : String(module4Progress));
-        localStorage.setItem('vwa_progress_5', selectedQuizModule === 5 ? '100' : String(module5Progress));
-        localStorage.setItem('vwa_progress_6', selectedQuizModule === 6 ? '100' : String(module6Progress));
+        localStorage.setItem('vwa_progress_1', String(p1));
+        localStorage.setItem('vwa_progress_2', String(p2));
+        localStorage.setItem('vwa_progress_3', String(p3));
+        localStorage.setItem('vwa_progress_4', String(p4));
+        localStorage.setItem('vwa_progress_5', String(p5));
+        localStorage.setItem('vwa_progress_6', String(p6));
         
         await completeModuleOnFirebase(selectedQuizModule);
       }
@@ -2197,7 +2249,6 @@ print(f"Bản mã hóa Vigenere: {encrypted}")`
                       <div className="p-5 space-y-4">
                         <div className="flex items-center justify-between">
                           <span className={`text-[10px] px-2 py-0.5 rounded font-mono ${course.difficultyClass}`}>{course.difficulty}</span>
-                          <span className="text-xs text-[#849495]">{course.completedCount} đã hoàn thành</span>
                         </div>
                         <div>
                           <h4 className="text-base font-bold text-white group-hover:text-[#00f0ff] transition-all">{course.title}</h4>
@@ -2361,8 +2412,7 @@ print(f"Bản mã hóa Vigenere: {encrypted}")`
                           Tiến độ: {module.progress}%
                         </div>
                       </div>
-                      <div className="border-t border-[#1c2b3c] mt-6 pt-4 flex items-center justify-between gap-1">
-                        <span className="text-[11px] text-[#849495] leading-normal">Học viên đã hoàn thành: <strong className="text-white font-mono">{module.completedCount}</strong></span>
+                      <div className="border-t border-[#1c2b3c] mt-6 pt-4 flex items-center justify-end">
                         <button 
                           onClick={() => {
                             setSelectedQuizModule(module.id);
@@ -2391,15 +2441,6 @@ print(f"Bản mã hóa Vigenere: {encrypted}")`
                     <ChevronLeft className="w-4 h-4" /> Quay lại thư viện
                   </button>
                   <h2 className="text-2xl font-extrabold text-[#fff] tracking-tight">{MODULE_LECTURES[readingModuleId || 4]?.title}</h2>
-                    <p className="text-xs text-[#849495]">Số học viên toàn cầu hoàn thành mô-đun này qua Firebase: <strong className="font-mono text-white text-xs">
-                      {readingModuleId === 1 && globalStats.module1CompletedCount}
-                      {readingModuleId === 2 && globalStats.module2CompletedCount}
-                      {readingModuleId === 3 && globalStats.module3CompletedCount}
-                      {readingModuleId === 4 && globalStats.module4CompletedCount}
-                      {readingModuleId === 5 && globalStats.module5CompletedCount}
-                      {readingModuleId === 6 && globalStats.module6CompletedCount}
-                      {!readingModuleId && globalStats.module4CompletedCount}
-                    </strong></p>
                   </div>
 
                   {/* Core Lesson text */}
@@ -2473,12 +2514,12 @@ print(f"Bản mã hóa Vigenere: {encrypted}")`
                               }}
                               className="w-full bg-[#0d1c2d] border border-[#1c2b3c] hover:border-[#00f0ff]/50 rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#00f0ff] font-mono transition-all"
                             >
-                              <option value={1}>Mô-đun 1: Nhập môn Mã hóa & Mã đối xứng (12 câu)</option>
-                              <option value={2}>Mô-đun 2: Bảo mật ứng dụng Web (12 câu)</option>
-                              <option value={3}>Mô-đun 3: An ninh hạ tầng mạng (12 câu)</option>
-                              <option value={4}>Mô-đun 4: Mật mã học nâng cao & RSA (12 câu)</option>
-                              <option value={5}>Mô-đun 5: Trắc nghiệm Chuyên sâu Chuyên gia (40 câu)</option>
-                              <option value={6}>Mô-đun 6: Mật mã học Toàn diện (60 câu)</option>
+                              <option value={1}>Mô-đun 1: Nhập môn Mã hóa & Mã đối xứng (20 câu ngẫu nhiên)</option>
+                              <option value={2}>Mô-đun 2: Bảo mật ứng dụng Web (20 câu ngẫu nhiên)</option>
+                              <option value={3}>Mô-đun 3: An ninh hạ tầng mạng (20 câu ngẫu nhiên)</option>
+                              <option value={4}>Mô-đun 4: Mật mã học nâng cao & RSA (20 câu ngẫu nhiên)</option>
+                              <option value={5}>Mô-đun 5: Trắc nghiệm Chuyên sâu Chuyên gia (20 câu ngẫu nhiên)</option>
+                              <option value={6}>Mô-đun 6: Mật mã học Toàn diện (20 câu ngẫu nhiên)</option>
                             </select>
                           </div>
                           
