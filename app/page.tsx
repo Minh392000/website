@@ -2571,10 +2571,6 @@ print(f"Bản mã hóa Vigenere: {encrypted}")`
                           <h3 className="text-lg font-bold text-white group-hover:text-[#00f0ff] transition-all">{module.title}</h3>
                           <p className="text-sm text-[#b9cacb] mt-2 leading-relaxed min-h-[60px] line-clamp-3">{module.desc}</p>
                         </div>
-                        <div className="flex items-center gap-1.5 text-xs text-[#4edea3] font-mono bg-[#003824]/30 px-3 py-1.5 rounded w-fit">
-                          <CheckCircle className="w-4 h-4" />
-                          Tiến độ: {module.progress}%
-                        </div>
                       </div>
                       <div className="border-t border-[#1c2b3c] mt-6 pt-4 flex items-center justify-end">
                         <button 

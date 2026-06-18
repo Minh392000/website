@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, ThinkingLevel } from "@google/genai";
 import { NextRequest, NextResponse } from "next/server";
 
 let aiClient: GoogleGenAI | null = null;
@@ -32,9 +32,9 @@ export async function POST(req: NextRequest) {
     let response;
     let lastError: any = null;
     const modelsToTry = [
+      "gemini-3.1-flash-lite",
       "gemini-3.5-flash",
       "gemini-3.1-pro-preview",
-      "gemini-3.1-flash-lite",
       "gemini-flash-latest"
     ];
 
@@ -45,13 +45,22 @@ export async function POST(req: NextRequest) {
       for (let attempt = 1; attempt <= attempts; attempt++) {
         try {
           console.log(`Attempting generateContent with model: ${modelName} (Attempt ${attempt}/${attempts})`);
+          
+          const config: any = {
+            systemInstruction: systemInstruction || "Bạn là Trợ lý AI học tập An ninh mạng (VWA Cybersecurity Assistant) xuất sắc. Bạn giải đáp toàn diện và trả lời mọi câu hỏi của học viên không hạn chế chủ đề. Hãy viết câu trả lời thật ngắn gọn, súc tích, đi thẳng vào ý chính, sử dụng các gạch đầu dòng rõ ràng, tuyệt đối không viết lan man hoặc dông dài.",
+            temperature: 0.3,
+          };
+
+          if (modelName.includes("3.5")) {
+            config.thinkingConfig = {
+              thinkingLevel: ThinkingLevel.LOW
+            };
+          }
+
           response = await ai.models.generateContent({
             model: modelName,
             contents: messages,
-            config: {
-              systemInstruction: systemInstruction || "Bạn là Trợ lý AI học tập An ninh mạng (VWA Cybersecurity Assistant) xuất sắc. Bạn giải đáp toàn diện và trả lời mọi câu hỏi của học viên không hạn chế chủ đề. Hãy viết câu trả lời thật ngắn gọn, súc tích, đi thẳng vào ý chính, sử dụng các gạch đầu dòng rõ ràng, tuyệt đối không viết lan man hoặc dông dài.",
-              temperature: 0.3,
-            }
+            config
           });
           if (response) {
             console.log(`Successfully generated content using model: ${modelName}`);
