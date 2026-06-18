@@ -1453,6 +1453,7 @@ export default function SecurityLearningPlatform() {
 
   const [activeQuestions, setActiveQuestions] = useState<QuizQuestion[]>([]);
   const [hasLoadedFromStorage, setHasLoadedFromStorage] = useState(false);
+  const isTransitioningRef = useRef(false);
 
   const modulesConfig = useMemo(() => [
     {
@@ -1787,48 +1788,72 @@ print(f"Bản mã hóa Vigenere: {encrypted}")`
       const initialModule = savedModule ? Number(savedModule) : 4;
       setSelectedQuizModule(initialModule);
 
-      const savedState = localStorage.getItem('vwa_quiz_state');
-      if (savedState) setQuizState(savedState as any);
-
-      const savedQuestions = localStorage.getItem('vwa_active_questions');
-      let questionsLoaded = false;
-      if (savedQuestions) {
+      const savedDataNew = localStorage.getItem('vwa_per_module_quiz_state');
+      let mState: any = null;
+      if (savedDataNew) {
         try {
-          const parsed = JSON.parse(savedQuestions);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            setActiveQuestions(parsed);
-            questionsLoaded = true;
+          const map = JSON.parse(savedDataNew);
+          if (map && map[initialModule]) {
+            mState = map[initialModule];
           }
         } catch (e) {
           console.error(e);
         }
       }
 
-      if (!questionsLoaded) {
-        setActiveQuestions(get20QuestionsForModule(initialModule));
+      if (mState) {
+        setQuizState(mState.quizState || 'splash');
+        setActiveQuestions(mState.activeQuestions || []);
+        setCurrentQuestionIndex(mState.currentQuestionIndex || 0);
+        setSelectedAnswers(mState.selectedAnswers || {});
+        setShowExplanation(mState.showExplanation || false);
+        setQuizScore(mState.quizScore || 0);
+        setIncorrectQuestionIndices(mState.incorrectQuestionIndices || []);
+        setReviewIndex(mState.reviewIndex || 0);
+      } else {
+        const savedState = localStorage.getItem('vwa_quiz_state');
+        if (savedState) setQuizState(savedState as any);
+
+        const savedQuestions = localStorage.getItem('vwa_active_questions');
+        let questionsLoaded = false;
+        if (savedQuestions) {
+          try {
+            const parsed = JSON.parse(savedQuestions);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              setActiveQuestions(parsed);
+              questionsLoaded = true;
+            }
+          } catch (e) {
+            console.error(e);
+          }
+        }
+
+        if (!questionsLoaded) {
+          setActiveQuestions(get20QuestionsForModule(initialModule));
+        }
+
+        const savedQIndex = localStorage.getItem('vwa_current_question_index');
+        if (savedQIndex) setCurrentQuestionIndex(Number(savedQIndex));
+
+        const savedSelAnswers = localStorage.getItem('vwa_selected_answers');
+        if (savedSelAnswers) {
+          try { setSelectedAnswers(JSON.parse(savedSelAnswers)); } catch (e) { console.error(e); }
+        }
+
+        const savedShowExpl = localStorage.getItem('vwa_show_explanation');
+        if (savedShowExpl) setShowExplanation(savedShowExpl === 'true');
+
+        const savedScore = localStorage.getItem('vwa_quiz_score');
+        if (savedScore) setQuizScore(Number(savedScore));
+
+        const savedIncorr = localStorage.getItem('vwa_incorrect_question_indices');
+        if (savedIncorr) {
+          try { setIncorrectQuestionIndices(JSON.parse(savedIncorr)); } catch (e) { console.error(e); }
+        }
+
+        const savedRevIdx = localStorage.getItem('vwa_review_index');
+        if (savedRevIdx) setReviewIndex(Number(savedRevIdx));
       }
-
-      const savedQIndex = localStorage.getItem('vwa_current_question_index');
-      if (savedQIndex) setCurrentQuestionIndex(Number(savedQIndex));
-
-      const savedSelAnswers = localStorage.getItem('vwa_selected_answers');
-      if (savedSelAnswers) {
-        try { setSelectedAnswers(JSON.parse(savedSelAnswers)); } catch (e) { console.error(e); }
-      }
-
-      const savedShowExpl = localStorage.getItem('vwa_show_explanation');
-      if (savedShowExpl) setShowExplanation(savedShowExpl === 'true');
-
-      const savedScore = localStorage.getItem('vwa_quiz_score');
-      if (savedScore) setQuizScore(Number(savedScore));
-
-      const savedIncorr = localStorage.getItem('vwa_incorrect_question_indices');
-      if (savedIncorr) {
-        try { setIncorrectQuestionIndices(JSON.parse(savedIncorr)); } catch (e) { console.error(e); }
-      }
-
-      const savedRevIdx = localStorage.getItem('vwa_review_index');
-      if (savedRevIdx) setReviewIndex(Number(savedRevIdx));
 
       setHasLoadedFromStorage(true);
     }
@@ -1971,17 +1996,26 @@ print(f"Bản mã hóa Vigenere: {encrypted}")`
 
   // Save quiz states to localStorage on change, ONLY after we have initially loaded them!
   useEffect(() => {
-    if (!hasLoadedFromStorage || typeof window === 'undefined') return;
+    if (!hasLoadedFromStorage || typeof window === 'undefined' || isTransitioningRef.current) return;
 
     localStorage.setItem('vwa_selected_quiz_module', String(selectedQuizModule));
-    localStorage.setItem('vwa_quiz_state', quizState);
-    localStorage.setItem('vwa_active_questions', JSON.stringify(activeQuestions));
-    localStorage.setItem('vwa_current_question_index', String(currentQuestionIndex));
-    localStorage.setItem('vwa_selected_answers', JSON.stringify(selectedAnswers));
-    localStorage.setItem('vwa_show_explanation', String(showExplanation));
-    localStorage.setItem('vwa_quiz_score', String(quizScore));
-    localStorage.setItem('vwa_incorrect_question_indices', JSON.stringify(incorrectQuestionIndices));
-    localStorage.setItem('vwa_review_index', String(reviewIndex));
+    
+    const savedData = localStorage.getItem('vwa_per_module_quiz_state');
+    let map: any = {};
+    if (savedData) {
+      try { map = JSON.parse(savedData); } catch (e) { console.error(e); }
+    }
+    map[selectedQuizModule] = {
+      quizState,
+      activeQuestions,
+      currentQuestionIndex,
+      selectedAnswers,
+      showExplanation,
+      quizScore,
+      incorrectQuestionIndices,
+      reviewIndex
+    };
+    localStorage.setItem('vwa_per_module_quiz_state', JSON.stringify(map));
   }, [
     hasLoadedFromStorage,
     selectedQuizModule,
@@ -1994,6 +2028,74 @@ print(f"Bản mã hóa Vigenere: {encrypted}")`
     incorrectQuestionIndices,
     reviewIndex
   ]);
+
+  const handleSelectModuleAndLoad = (moduleId: number) => {
+    if (typeof window === 'undefined') return;
+
+    // Save current active module state first!
+    if (selectedQuizModule && !isTransitioningRef.current) {
+      const savedData = localStorage.getItem('vwa_per_module_quiz_state');
+      let map: any = {};
+      if (savedData) {
+        try { map = JSON.parse(savedData); } catch (e) { console.error(e); }
+      }
+      map[selectedQuizModule] = {
+        quizState,
+        activeQuestions,
+        currentQuestionIndex,
+        selectedAnswers,
+        showExplanation,
+        quizScore,
+        incorrectQuestionIndices,
+        reviewIndex
+      };
+      localStorage.setItem('vwa_per_module_quiz_state', JSON.stringify(map));
+    }
+
+    // Set transition block to prevent intermediate saves during batching
+    isTransitioningRef.current = true;
+
+    setSelectedQuizModule(moduleId);
+    localStorage.setItem('vwa_selected_quiz_module', String(moduleId));
+
+    // Load new module's states
+    const savedDataNew = localStorage.getItem('vwa_per_module_quiz_state');
+    let mState: any = null;
+    if (savedDataNew) {
+      try {
+        const map = JSON.parse(savedDataNew);
+        if (map && map[moduleId]) {
+          mState = map[moduleId];
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    if (mState) {
+      setQuizState(mState.quizState || 'splash');
+      setActiveQuestions(mState.activeQuestions || []);
+      setCurrentQuestionIndex(mState.currentQuestionIndex || 0);
+      setSelectedAnswers(mState.selectedAnswers || {});
+      setShowExplanation(mState.showExplanation || false);
+      setQuizScore(mState.quizScore || 0);
+      setIncorrectQuestionIndices(mState.incorrectQuestionIndices || []);
+      setReviewIndex(mState.reviewIndex || 0);
+    } else {
+      setQuizState('splash');
+      setActiveQuestions(get20QuestionsForModule(moduleId));
+      setCurrentQuestionIndex(0);
+      setSelectedAnswers({});
+      setShowExplanation(false);
+      setQuizScore(0);
+      setIncorrectQuestionIndices([]);
+      setReviewIndex(0);
+    }
+
+    setTimeout(() => {
+      isTransitioningRef.current = false;
+    }, 10);
+  };
 
   const startQuiz = () => {
     setQuizState('playing');
@@ -2325,29 +2427,14 @@ print(f"Bản mã hóa Vigenere: {encrypted}")`
                           <h4 className="text-base font-bold text-white group-hover:text-[#00f0ff] transition-all">{course.title}</h4>
                           <p className="text-xs text-[#849495] mt-1">{course.desc}</p>
                         </div>
-                        <div className="space-y-1">
-                          <div className="flex justify-between text-xs font-mono text-[#849495]">
-                            <span>Tiến độ học tập</span>
-                            <span className="text-[#00dbe9]">{course.progress}%</span>
-                          </div>
-                          <div className="w-full h-1.5 bg-[#051424] rounded-full overflow-hidden">
-                            <div className="h-full bg-gradient-to-r from-[#00dbe9] to-[#00f0ff] rounded-full" style={{ width: `${course.progress}%` }} />
-                          </div>
-                        </div>
                       </div>
                       <div className="border-t border-[#1c2b3c] p-4 bg-[#051424]/40 flex gap-2">
                         <button 
                           onClick={() => {
                             setActiveTab('modules');
                             setReadingModuleId(course.id);
-                            setSelectedQuizModule(course.id);
-                            setQuizState('splash');
-                            setActiveQuestions(get20QuestionsForModule(course.id));
-                            setCurrentQuestionIndex(0);
-                            setSelectedAnswers({});
-                            setShowExplanation(false);
-                            setQuizScore(0);
-                            setIncorrectQuestionIndices([]);
+                            // eslint-disable-next-line react-hooks/refs
+                            handleSelectModuleAndLoad(course.id);
                           }}
                           className="flex-1 py-1.5 bg-transparent hover:bg-[#122131] border border-[#273647] hover:border-[#00f0ff]/50 rounded text-center text-xs text-[#b9cacb] hover:text-white transition-all font-semibold"
                         >
@@ -2492,15 +2579,8 @@ print(f"Bản mã hóa Vigenere: {encrypted}")`
                       <div className="border-t border-[#1c2b3c] mt-6 pt-4 flex items-center justify-end">
                         <button 
                           onClick={() => {
-                            setSelectedQuizModule(module.id);
                             setReadingModuleId(module.id);
-                            setQuizState('splash');
-                            setActiveQuestions(get20QuestionsForModule(module.id));
-                            setCurrentQuestionIndex(0);
-                            setSelectedAnswers({});
-                            setShowExplanation(false);
-                            setQuizScore(0);
-                            setIncorrectQuestionIndices([]);
+                            handleSelectModuleAndLoad(module.id);
                           }}
                           className="px-3.5 py-2 bg-[#00f0ff] hover:bg-[#7df4ff] text-[#051424] text-xs font-bold rounded flex items-center gap-1 transition-all whitespace-nowrap"
                         >
@@ -2592,15 +2672,7 @@ print(f"Bản mã hóa Vigenere: {encrypted}")`
                             <select 
                               value={selectedQuizModule}
                               onChange={(e) => {
-                                const id = Number(e.target.value);
-                                setSelectedQuizModule(id);
-                                setQuizState('splash');
-                                setActiveQuestions(get20QuestionsForModule(id));
-                                setCurrentQuestionIndex(0);
-                                setSelectedAnswers({});
-                                setShowExplanation(false);
-                                setQuizScore(0);
-                                setIncorrectQuestionIndices([]);
+                                handleSelectModuleAndLoad(Number(e.target.value));
                               }}
                               className="w-full bg-[#0d1c2d] border border-[#1c2b3c] hover:border-[#00f0ff]/50 rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#00f0ff] font-mono transition-all"
                             >
