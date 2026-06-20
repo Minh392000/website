@@ -2257,21 +2257,21 @@ print(f"Bản mã hóa Vigenere: {encrypted}")`
           <nav className="hidden md:flex items-center gap-1 bg-[#0b1622] p-1.5 rounded-lg border border-[#1c2b3c]" id="desktop_tabs">
             <button 
               onClick={() => { setActiveTab('dashboard'); setReadingModuleId(null); }}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${activeTab === 'dashboard' ? 'text-[#00f0ff] bg-[#122131] border-b-2 border-[#00f0ff] rounded-b-none' : 'text-[#b9cacb] hover:text-white hover:bg-[#122131]/50'}`}
+              className={`px-3.5 py-2 rounded-md text-sm font-medium transition-all duration-200 ${activeTab === 'dashboard' ? 'text-[#00f0ff] bg-[#122131] border-b-2 border-[#00f0ff] rounded-b-none' : 'text-[#b9cacb] hover:text-white hover:bg-[#122131]/50'}`}
               id="tab_btn_dashboard"
             >
               Bảng điều khiển
             </button>
             <button 
               onClick={() => { setActiveTab('modules'); setReadingModuleId(null); }}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${activeTab === 'modules' ? 'text-[#00f0ff] bg-[#122131] border-b-2 border-[#00f0ff] rounded-b-none' : 'text-[#b9cacb] hover:text-white hover:bg-[#122131]/50'}`}
+              className={`px-3.5 py-2 rounded-md text-sm font-medium transition-all duration-200 ${activeTab === 'modules' ? 'text-[#00f0ff] bg-[#122131] border-b-2 border-[#00f0ff] rounded-b-none' : 'text-[#b9cacb] hover:text-white hover:bg-[#122131]/50'}`}
               id="tab_btn_modules"
             >
               Mô-đun học tập
             </button>
             <button 
               onClick={() => { setActiveTab('chat'); setReadingModuleId(null); }}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${activeTab === 'chat' ? 'text-[#00f0ff] bg-[#122131] border-b-2 border-[#00f0ff] rounded-b-none' : 'text-[#b9cacb] hover:text-white hover:bg-[#122131]/50'}`}
+              className={`px-3.5 py-2 rounded-md text-sm font-medium transition-all duration-200 ${activeTab === 'chat' ? 'text-[#00f0ff] bg-[#122131] border-b-2 border-[#00f0ff] rounded-b-none' : 'text-[#b9cacb] hover:text-white hover:bg-[#122131]/50'}`}
               id="tab_btn_chat"
             >
               Sân chơi AI
@@ -3326,6 +3326,8 @@ print(f"Bản mã hóa Vigenere: {encrypted}")`
 
           </div>
         )}
+
+                {/* 4. ACADEMIC PROJECT REPORT & AI PROMPT ARCHIVE REMOVED */}
 
       </main>
 
